@@ -698,82 +698,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* File Upload */
-        .file-upload-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .file-upload-modal.active {
-            display: flex;
-        }
-
-        .file-upload-box {
-            background: var(--card-bg);
-            border-radius: 25px;
-            width: 90%;
-            max-width: 500px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .upload-header {
-            color: var(--primary-green);
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .upload-header i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .file-drop-area {
-            border: 2px dashed var(--secondary-green);
-            border-radius: 15px;
-            padding: 40px 20px;
-            text-align: center;
-            margin-bottom: 25px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .file-drop-area:hover {
-            border-color: var(--accent-green);
-            background: var(--light-green);
-        }
-
-        .file-drop-area i {
-            font-size: 3rem;
-            color: var(--secondary-green);
-            margin-bottom: 15px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-info {
-            margin-top: 15px;
-            color: var(--secondary-green);
-            font-size: 0.9rem;
-        }
-
-        .upload-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
         /* Footer */
         footer {
             text-align: center;
@@ -910,7 +834,7 @@
                 gap: 10px;
             }
 
-            .pin-modal, .file-upload-box {
+            .pin-modal {
                 padding: 30px 20px;
             }
         }
@@ -936,11 +860,8 @@
             </div>
         </header>
 
-        <!-- Control Panel -->
+        <!-- Control Panel - Only Export Button Remains -->
         <div class="control-panel">
-            <button class="control-btn" id="importBtn">
-                <i class="fas fa-file-import"></i> Import JSON Data
-            </button>
             <button class="control-btn" id="exportBtn">
                 <i class="fas fa-file-export"></i> Export as JSON
             </button>
@@ -1051,966 +972,818 @@
         </div>
     </div>
 
-    <!-- File Upload Modal -->
-    <div class="file-upload-modal" id="fileUploadModal">
-        <div class="file-upload-box">
-            <div class="upload-header">
-                <i class="fas fa-file-import"></i>
-                <h3>Import Personnel Data</h3>
-                <p>Upload a JSON file with personnel data</p>
-            </div>
-            <div class="file-drop-area" id="fileDropArea">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Drag & drop your JSON file here</p>
-                <p>or</p>
-                <button class="control-btn" id="browseFileBtn">
-                    <i class="fas fa-folder-open"></i> Browse Files
-                </button>
-                <input type="file" class="file-input" id="fileInput" accept=".json">
-                <div class="file-info">
-                    <p>Format: JSON array with serviceNo, rank, name, phone fields</p>
-                </div>
-            </div>
-            <div class="upload-buttons">
-                <button class="control-btn" id="uploadFileBtn" disabled>
-                    <i class="fas fa-upload"></i> Upload & Import
-                </button>
-                <button class="control-btn pin-cancel" id="cancelUploadBtn">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Security PIN - Change this to your desired PIN
         const SECURITY_PIN = "8712";
         
-        // Initialize with sample data
+        // All personnel data embedded directly in the file
         let personnelData = [
-            { serviceNo: "O/10691", rank: "Captain", name: "UST Dunuthilaka", phone: "0706575844" },
             { serviceNo: "O/10802", rank: "Captain", name: "K S C Karunarathna", phone: "0778216616" },
             { serviceNo: "O/11526", rank: "Lt", name: "RPKS Rajapaksha", phone: "0762287484" },
             { serviceNo: "O/11576", rank: "Captain(QM)", name: "KMD Sisira kumara", phone: "0711204364" },
             { serviceNo: "O/11705", rank: "2/Lt", name: "RM JANAKA", phone: "0771513795" },
             { serviceNo: "O/11743", rank: "2/Lt", name: "GBS Madhushan", phone: "0768584319" },
+            { serviceNo: "O/10691", rank: "Captain", name: "UST Dunuthilaka", phone: "0706575844" },
+            { serviceNo: "O/5405", rank: "Major", name: "WRP Sampath", phone: "0770648852" },
             { serviceNo: "O/6147", rank: "Major", name: "SH Sudusinghe", phone: "0773306405" },
             { serviceNo: "O/71526", rank: "Captain", name: "MN Madhushanka", phone: "0702000502" },
             { serviceNo: "O/8573", rank: "Major", name: "BHDS KARUNARATHNA", phone: "0773646374" },
             { serviceNo: "O/8702", rank: "Major", name: "RMTS ALAHAKOON", phone: "0762456346" },
-            { serviceNo: "O/8970", rank: "Major", name: "GCO Siriwaradana", phone: "0710133727" }
-        ];
+            { serviceNo: "O/8970", rank: "Major", name: "GCO Siriwaradana", phone: "0710133727" },
+            { serviceNo: "S/10H00198", rank: "S/SGT", name: "Punchi Banda TM", phone: "0760234669" },
+            { serviceNo: "S/10H00505", rank: "PTE", name: "NawarathnaBanda NGWM", phone: "0771778960" },
+            { serviceNo: "S/10H01034", rank: "SGT", name: "Lalith Rohana ID", phone: "0756837962" },
+            { serviceNo: "S/10H01190", rank: "S/SGT", name: "Wanasinghe WMN", phone: "0712377318" },
+            { serviceNo: "S/10H01213", rank: "L/CPL", name: "Nawarathna RU", phone: "0771332349" },
+            { serviceNo: "S/10H01220", rank: "CPL", name: "Indika RMG", phone: "0767196834" },
+            { serviceNo: "S/10H01293", rank: "CPL", name: "RANJITH KUMARA DM", phone: "0716860730" },
+            { serviceNo: "S/10H01304", rank: "SGT", name: "Subhasinha SSK", phone: "0766624740" },
+            { serviceNo: "S/10H01306", rank: "S/SGT", name: "Weerakoon WMAP", phone: "0775063395" },
+            { serviceNo: "S/10H01310", rank: "S/SGT", name: "Chandrasiri WW", phone: "0760006728" },
+            { serviceNo: "S/10H01311", rank: "L/CPL", name: "DISSANAYAKA DR", phone: "0772968057" },
+            { serviceNo: "S/10H01323", rank: "CPL", name: "Sarath Kumara DS", phone: "0718912560" },
+            { serviceNo: "S/10H01333", rank: "S/SGT", name: "WIJESINGHA PGDKR", phone: "0702234897" },
+            { serviceNo: "S/10H01335", rank: "CPL", name: "Premadasa WAN", phone: "0775704084" },
+            { serviceNo: "S/10H01344", rank: "PTE", name: "LANKATHILAKA PN", phone: "0740744298" },
+            { serviceNo: "S/10H01347", rank: "WO II", name: "Rajapaksha RBRK", phone: "0706629855" },
+            { serviceNo: "S/10H01349", rank: "SGT", name: "Karunathilaka MMN", phone: "0716148387" },
+            { serviceNo: "S/10H01361", rank: "SGT", name: "Pradeep Kumara KW", phone: "0778092024" },
+            { serviceNo: "S/10H01365", rank: "SGT", name: "Kelum HAJ", phone: "0710583230" },
+            { serviceNo: "S/10H01372", rank: "CPL", name: "ROSHAN SANJEEWA GAN", phone: "0778334255" },
+            { serviceNo: "S/10H01385", rank: "CPL", name: "PRIMAL WAS", phone: "0704964062" },
+            { serviceNo: "S/10H01406", rank: "CPL", name: "THENNAKOON TMAGPK", phone: "0771385124" },
+            { serviceNo: "S/10H01446", rank: "L/CPL", name: "Herath HMUGSK", phone: "0778783197" },
+            { serviceNo: "S/10H01448", rank: "SGT", name: "DHARMARATHNA HPGJK", phone: "0771191502" },
+            { serviceNo: "S/10H01453", rank: "CPL", name: "GUNATHILAKA GG", phone: "0713021798" },
+            { serviceNo: "S/10H01469", rank: "CPL", name: "Sisira Kumara RDS", phone: "0771998358" },
+            { serviceNo: "S/10H01489", rank: "CPL", name: "RAJAPAKSHA RDSK", phone: "0769847105" },
+            { serviceNo: "S/10H01491", rank: "CPL", name: "WANIGARATHNA WANK", phone: "0774142177" },
+            { serviceNo: "S/10H01494", rank: "CPL", name: "TENNAKOON TMCP", phone: "0715847885" },
+            { serviceNo: "S/10H01499", rank: "PTE", name: "PREDEEP KUMARA MR", phone: "0715141037" },
+            { serviceNo: "S/10H01507", rank: "CPL", name: "WIJERATHNA AMAKGRS", phone: "0704313430" },
+            { serviceNo: "S/10H01513", rank: "PTE", name: "SAMANTHA JA", phone: "0742693894" },
+            { serviceNo: "S/10H01525", rank: "CPL", name: "SUBHASAN MVTA", phone: "0760143508" },
+            { serviceNo: "S/10H01530", rank: "PTE", name: "PRIYADARSHANA NANS", phone: "0770368653" },
+            { serviceNo: "S/10H01535", rank: "CPL", name: "PUSHPAKUMARA LPR", phone: "0703911946" },
+            { serviceNo: "S/10H01538", rank: "CPL", name: "HERATH HMSA", phone: "0776627856" },
+            { serviceNo: "S/10H01549", rank: "L/CPL", name: "JAYARATHNA LAMK", phone: "0704942842" },
+            { serviceNo: "S/10H01561", rank: "CPL", name: "FERNANDO DIA", phone: "0718912283" },
+            { serviceNo: "S/10H01578", rank: "L/CPL", name: "THUSHARA BMI", phone: "0762831374" },
+            { serviceNo: "S/10H01581", rank: "CPL", name: "JAYAWEERA KMJC", phone: "0764038312" },
+            { serviceNo: "S/10H01585", rank: "SGT", name: "Wanninayake WMJK", phone: "0703971729" },
+            { serviceNo: "S/10H01599", rank: "CPL", name: "KUMARATHUNGA SK", phone: "0760085704" },
+            { serviceNo: "S/10H01603", rank: "CPL", name: "WEERASINGHE MAA", phone: "0762594760" },
+            { serviceNo: "S/10H01614", rank: "L/CPL", name: "JAYASINGHE HGRK", phone: "0710635777" },
+            { serviceNo: "S/10H01618", rank: "CPL", name: "JAYARATHNA KRN", phone: "0768101363" },
+            { serviceNo: "S/10H01619", rank: "L/CPL", name: "WIMALASIRI AMRSS", phone: "0766609736" },
+            { serviceNo: "S/10H01640", rank: "CPL", name: "Sudharmasiri WPP", phone: "0776113520" },
+            { serviceNo: "S/10H01649", rank: "L/CPL", name: "EKANAYAKA EMTR", phone: "0718912598" },
+            { serviceNo: "S/10H01655", rank: "L/CPL", name: "NISHANTHA KUMARA RPG", phone: "0763092442" },
+            { serviceNo: "S/10H01671", rank: "L/CPL", name: "PREMADASA KMAK", phone: "0776465955" },
+            { serviceNo: "S/10H01690", rank: "CPL", name: "Dissanayaka DMBGPR", phone: "0769822025" },
+            { serviceNo: "S/10H01702", rank: "L/CPL", name: "LASANTHA KUMARA GG", phone: "0707828807" },
+            { serviceNo: "S/10H01724", rank: "PTE", name: "JAYASINGHE DJ", phone: "0766014353" },
+            { serviceNo: "S/10H01744", rank: "L/CPL", name: "UPUL KUMARA GG", phone: "0713900286" },
+            { serviceNo: "S/10H01749", rank: "L/CPL", name: "AJITH KUMARA BG", phone: "0719623194" },
+            { serviceNo: "S/10H01752", rank: "L/CPL", name: "Wijesekara SL", phone: "0767218909" },
+            { serviceNo: "S/10H01774", rank: "L/CPL", name: "SALGADU MSK", phone: "0776870158" },
+            { serviceNo: "S/10H01775", rank: "L/CPL", name: "UPUL KD", phone: "0743242661" },
+            { serviceNo: "S/10H01785", rank: "L/CPL", name: "BANDARA JMCT", phone: "0772749627" },
+            { serviceNo: "S/10H01795", rank: "CPL", name: "HASINTHA CMG", phone: "0776125579" },
+            { serviceNo: "S/10H01805", rank: "CPL", name: "SARATH KUMARA AM", phone: "0715729064" },
+            { serviceNo: "S/10H01835", rank: "SGT", name: "Ajith Bandara PKM", phone: "0771536601" },
+            { serviceNo: "S/10H01836", rank: "L/CPL", name: "Jayaweera RMCK", phone: "0710508492" },
+            { serviceNo: "S/10H01837", rank: "CPL", name: "RAJAPAKSHA RHMAB", phone: "0715209077" },
+            { serviceNo: "S/10H01839", rank: "L/CPL", name: "Lakmal APN", phone: "0704856701" },
+            { serviceNo: "S/10H01840", rank: "CPL", name: "Kelum Sameera JA", phone: "0771179608" },
+            { serviceNo: "S/10H01843", rank: "PTE", name: "PREMARATHNA KGS", phone: "0753776176" },
+            { serviceNo: "S/10H01851", rank: "L/CPL", name: "SADARUWAN GLD", phone: "0715654176" },
+            { serviceNo: "S/12H00972", rank: "CPL", name: "JAYAWICKRAMA HAN", phone: "0773727690" },
+            { serviceNo: "S/12H01013", rank: "SGT", name: "Jayasingha LSSK", phone: "0774394237" },
+            { serviceNo: "S/12H01248", rank: "L/CPL", name: "WIPULASENA WRUK", phone: "0766454829" },
+            { serviceNo: "S/12H01450", rank: "CPL", name: "SAMANTHA PB", phone: "0766428510" },
+            { serviceNo: "S/15H00049", rank: "WO II", name: "PRIYANKA HJ", phone: "0718769738" },
+            { serviceNo: "S/15H00177", rank: "CPL", name: "Rupasingha RB", phone: "0715174774" },
+            { serviceNo: "S/15H00225", rank: "L/CPL", name: "Udaya Kumara SS", phone: "0778915866" },
+            { serviceNo: "S/15H00236", rank: "SGT", name: "Gamage EGS", phone: "0764585144" },
+            { serviceNo: "S/15H00237", rank: "SGT", name: "Gunawardana RMN", phone: "0704848230" },
+            { serviceNo: "S/15H00242", rank: "SGT", name: "Saman Kumara WG", phone: "0770641606" },
+            { serviceNo: "S/15H00244", rank: "SGT", name: "Senanayaka WMP", phone: "0771650225" },
+            { serviceNo: "S/15H00252", rank: "SGT", name: "Priyadarshana HPI", phone: "0710580256" },
+            { serviceNo: "S/15H00278", rank: "CPL", name: "NAWARATHNA KUMARA SMR", phone: "0704808006" },
+            { serviceNo: "S/15H00291", rank: "CPL", name: "Duminda Bandara RM", phone: "0775088854" },
+            { serviceNo: "S/15H00433", rank: "CPL", name: "TISSAWALANGU TMJP", phone: "0766811459" },
+            { serviceNo: "S/15H00459", rank: "CPL", name: "PREMATHILAKA IDC", phone: "0779676880" },
+            { serviceNo: "S/15H00468", rank: "CPL", name: "KEERTHISINGHA KB", phone: "0777916723" },
+            { serviceNo: "S/15H00498", rank: "CPL", name: "DISSANAYAKA DRH", phone: "0772687597" },
+            { serviceNo: "S/15H00526", rank: "CPL", name: "LAHIRU KUMARA HS", phone: "0760584958" },
+            { serviceNo: "S/15H00581", rank: "L/CPL", name: "GARUSINGHE SD", phone: "0778356996" },
+            { serviceNo: "S/15H00673", rank: "CPL", name: "WIJESUNDARA WMN", phone: "0705072050" },
+            { serviceNo: "S/15H00724", rank: "L/CPL", name: "WIJESEKARA NGWMDB", phone: "0740567812" },
+            { serviceNo: "S/15H00756", rank: "L/CPL", name: "THUSHARA PG", phone: "0770501863" },
+            { serviceNo: "S/15H00807", rank: "L/CPL", name: "WIMALATHUNGA KDR", phone: "0710973369" },
+            { serviceNo: "S/15H00876", rank: "PTE", name: "PIRIYADARASANA GAS", phone: "0764048447" },
+            { serviceNo: "S/15H00887", rank: "PTE", name: "ARUNASHANTHA KM", phone: "0776399854" },
+            { serviceNo: "S/15H00944", rank: "L/CPL", name: "PATHMA KUMARA KWD", phone: "0702303802" },
+            { serviceNo: "S/16D00175", rank: "S/SGT", name: "NISSHANKA KPM", phone: "0774949838" },
+            { serviceNo: "S/16H00271", rank: "WO II", name: "Jayasingha HPC", phone: "0772747972" },
+            { serviceNo: "S/16H00277", rank: "WO II", name: "SAMPATH BPG", phone: "0710601622" },
+            { serviceNo: "S/16H00281", rank: "SGT", name: "Madushanka KT", phone: "0771899439" },
+            { serviceNo: "S/16H00316", rank: "WO II", name: "Ramisraja A", phone: "0761879353" },
+            { serviceNo: "S/16H00328", rank: "SGT", name: "Priyadarshana MD", phone: "0769228114" },
+            { serviceNo: "S/16H00364", rank: "CPL", name: "Ranjith MR", phone: "0779130363" },
+            { serviceNo: "S/16H00374", rank: "SGT", name: "ILANGARATHNA TB", phone: "0786174994" },
+            { serviceNo: "S/16H00440", rank: "L/CPL", name: "GUNASEKARA HB", phone: "0770471303" },
+            { serviceNo: "S/16H00458", rank: "L/CPL", name: "SARATH KUMARA MG", phone: "0775562613" },
+            { serviceNo: "S/16H00463", rank: "CPL", name: "CHANDANA MHMS", phone: "0774357607" },
+            { serviceNo: "S/16H00550", rank: "CPL", name: "GUNASAKARA RMAB", phone: "0763565310" },
+            { serviceNo: "S/16H00643", rank: "L/CPL", name: "HEMAJITH S", phone: "0714744243" },
+            { serviceNo: "S/16H00679", rank: "L/CPL", name: "BANDARA KWTN", phone: "0743387195" },
+            { serviceNo: "S/16H00726", rank: "L/CPL", name: "DISANAYAKA YGSR", phone: "0770246605" },
+            { serviceNo: "S/16H00735", rank: "SGT", name: "PRASANNA KUMARA DSAS", phone: "0777444730" },
+            { serviceNo: "S/16H00755", rank: "L/CPL", name: "KALUARACHCHI AKSG", phone: "0703527362" },
+            { serviceNo: "S/17H00208", rank: "WO I", name: "HM Sunil Shantha", phone: "0767314050" },
+            { serviceNo: "S/17H00223", rank: "CPL", name: "Rajakaruna UGAI", phone: "0771382461" },
+            { serviceNo: "S/17H00241", rank: "WO II", name: "Thilakasiri BDLP", phone: "0760598163" },
+            { serviceNo: "S/17H00276", rank: "CPL", name: "Asiri Bandara RDC", phone: "0761541446" },
+            { serviceNo: "S/17H00432", rank: "SGT", name: "PUSHPAKUMARA DPAN", phone: "0740958391" },
+            { serviceNo: "S/17H00540", rank: "CPL", name: "JAYAWEERA WD", phone: "0763426326" },
+            { serviceNo: "S/17H00636", rank: "L/CPL", name: "ATHTHANAYAKA RMAI", phone: "0764086122" },
+            { serviceNo: "S/20H00086", rank: "WO II", name: "Chandrapala AM", phone: "0761963075" },
+            { serviceNo: "S/20H00149", rank: "CPL", name: "Anura Priyantha AKM", phone: "0769708987" },
+            { serviceNo: "S/20H00160", rank: "CPL", name: "Ranjith Bandara TM", phone: "0761820004" },
+            { serviceNo: "S/20H00163", rank: "CPL", name: "Kelum Kumara HMC", phone: "0766991848" },
+            { serviceNo: "S/20H00184", rank: "SGT", name: "Prasange HGG", phone: "0767360642" },
+            { serviceNo: "S/20H00198", rank: "CPL", name: "Jayasingha JPI", phone: "0711251810" },
+            { serviceNo: "S/20H00207", rank: "CPL", name: "SANDARUWAN OVPS", phone: "0767263451" },
+            { serviceNo: "S/20H00208", rank: "CPL", name: "ARIYARATHNA AL", phone: "0711791288" },
+            { serviceNo: "S/20H00218", rank: "CPL", name: "RANASINGHE JMRK", phone: "0764012259" },
+            { serviceNo: "S/20H00229", rank: "CPL", name: "SUMITH A", phone: "0769488302" },
+            { serviceNo: "S/20H00236", rank: "CPL", name: "Jayarathna DWS", phone: "0762243269" },
+            { serviceNo: "S/20H00262", rank: "CPL", name: "KOHOMBEPOLA HAKMJ", phone: "0774284948" },
+            { serviceNo: "S/20H00263", rank: "CPL", name: "ROHITHA BANDARA C", phone: "0760843705" },
+            { serviceNo: "S/20H00270", rank: "CPL", name: "DISSANAYAKA DMC", phone: "0741273586" },
+            { serviceNo: "S/20H00281", rank: "CPL", name: "PRASANGA HACA", phone: "0769265937" },
+            { serviceNo: "S/20H00289", rank: "CPL", name: "Pemasiri N", phone: "0779358825" },
+{ serviceNo: "S/20H00297", rank: "CPL", name: "NAWARATHNA BANDA AG", phone: "0712787785" },
+{ serviceNo: "S/20H00300", rank: "CPL", name: "PREMACHANDRA YG", phone: "0771579304" },
+{ serviceNo: "S/20H00316", rank: "CPL", name: "MAYTHREEPALA RL", phone: "0765359032" },
+{ serviceNo: "S/20H00329", rank: "CPL", name: "WIMALARATHNA DM", phone: "0742959088" },
+{ serviceNo: "S/20H00330", rank: "CPL", name: "BANDARA EHMNP", phone: "0770032813" },
+{ serviceNo: "S/20H00335", rank: "CPL", name: "PUBUDU KUMARA HM", phone: "0776949274" },
+{ serviceNo: "S/20H00349", rank: "SGT", name: "ABEWICKRAMA HGM", phone: "0761182422" },
+{ serviceNo: "S/20H00353", rank: "CPL", name: "CHAMILA RA", phone: "0769029527" },
+{ serviceNo: "S/20H00369", rank: "L/CPL", name: "DINESH AS", phone: "0742260440" },
+{ serviceNo: "S/20H00370", rank: "L/CPL", name: "SAMPATH ATL", phone: "0765342875" },
+{ serviceNo: "S/20H00389", rank: "SGT", name: "PUSHPAKUMARA JMN", phone: "0711978341" },
+{ serviceNo: "S/20H00395", rank: "L/CPL", name: "KHATALIYADDA KTGR", phone: "0762658684" },
+{ serviceNo: "S/20H00428", rank: "L/CPL", name: "LALITH KUMARA JM", phone: "0779351756" },
+{ serviceNo: "S/20H00432", rank: "L/CPL", name: "SOMASIRI TM", phone: "0770063162" },
+{ serviceNo: "S/20H00449", rank: "PTE", name: "VIJAYALATH WPLG", phone: "0768905072" },
+{ serviceNo: "S/20H00474", rank: "L/CPL", name: "DISSANAYAKA AAS", phone: "0775364615" },
+{ serviceNo: "S/20H00496", rank: "L/CPL", name: "NANDA KUMARA NLA", phone: "0774642641" },
+{ serviceNo: "S/20H00500", rank: "L/CPL", name: "GAMINI PUSHPA KUMARA WM", phone: "0776550254" },
+{ serviceNo: "S/20H00519", rank: "PTE", name: "BANDARA KS", phone: "0740970703" },
+{ serviceNo: "S/20H00526", rank: "L/CPL", name: "PATHTHINIGE PTNS", phone: "0715629149" },
+{ serviceNo: "S/20H00527", rank: "PTE", name: "FANANDO GCD", phone: "0767085101" },
+{ serviceNo: "S/20H00536", rank: "L/CPL", name: "JAYATHARANGA WH", phone: "0773520543" },
+{ serviceNo: "S/20H00547", rank: "PTE", name: "WIJESEKARA YB", phone: "0758007974" },
+{ serviceNo: "S/20H00548", rank: "CPL", name: "SARATH DMU", phone: "0770652368" },
+{ serviceNo: "S/2H02978", rank: "PTE", name: "MAHADIULWEWA JPCM", phone: "0705607196" },
+{ serviceNo: "S/3H02448", rank: "CPL", name: "EKANAYAKE EMPK", phone: "0764161523" },
+{ serviceNo: "S/3H02521", rank: "CPL", name: "BANDARA JMURD", phone: "0770769813" },
+{ serviceNo: "S/3H02583", rank: "CPL", name: "PIYARATHNA HBSK", phone: "0741916359" },
+{ serviceNo: "S/522920", rank: "CPL", name: "SHALITHA KUMARA PL", phone: "0704010140" },
+{ serviceNo: "S/529421", rank: "L/CPL", name: "DASANAYAKE DASD", phone: "0773238561" },
+{ serviceNo: "S/529883", rank: "CPL", name: "Senarathna SHL", phone: "0769212542" },
+{ serviceNo: "S/531820", rank: "L/CPL", name: "Rathnajeewa LPDCD", phone: "0716143106" },
+{ serviceNo: "S/533639", rank: "L/CPL", name: "EKANAYAKA EMDB", phone: "0761073264" },
+{ serviceNo: "S/533651", rank: "L/CPL", name: "ANURADA URN", phone: "0761388851" },
+{ serviceNo: "S/534214", rank: "L/CPL", name: "DE SILVA KMML", phone: "0701162241" },
+{ serviceNo: "S/534278", rank: "L/CPL", name: "SAHIN MAM", phone: "0762104117" },
+{ serviceNo: "S/534279", rank: "PTE", name: "MINHAJ MM", phone: "0763899241" },
+{ serviceNo: "S/535601", rank: "L/CPL", name: "DILSHAN KLTR", phone: "0750746834" },
+{ serviceNo: "S/535924", rank: "L/CPL", name: "JAYATHILAKA AGSD", phone: "0771959883" },
+{ serviceNo: "S/5D03193", rank: "L/CPL", name: "Dhanush Kavinga RB", phone: "0714060817" },
+{ serviceNo: "S/602885", rank: "WO II", name: "RANATHUNGA PRAWK", phone: "0711535545" },
+{ serviceNo: "S/603074", rank: "SGT", name: "PIYARATHNA DGPS", phone: "0701399341" },
+{ serviceNo: "S/604984", rank: "CPL", name: "Ekanayaka DMDK", phone: "0716477996" },
+{ serviceNo: "S/606281", rank: "PTE", name: "Gunasekara RMMP", phone: "0767730458" },
+{ serviceNo: "S/607553", rank: "PTE", name: "RODRIGO PSR", phone: "0774917624" },
+{ serviceNo: "S/652696", rank: "L/CPL", name: "SISIRAKUMARA AA", phone: "0712261719" },
+{ serviceNo: "S/653060", rank: "L/CPL", name: "MADAMPEGE MRS", phone: "0719492680" },
+{ serviceNo: "S/776598", rank: "S/SGT", name: "Chinthaka WC", phone: "0789101628" },
+{ serviceNo: "S/777314", rank: "CPL", name: "SENARATH HWCK", phone: "0740386374" },
+{ serviceNo: "S/780310", rank: "L/CPL", name: "Dulanga NL", phone: "0772423671" },
+{ serviceNo: "S/780539", rank: "L/CPL", name: "WIJESIRI DGDWN", phone: "0762326294" },
+{ serviceNo: "S/780940", rank: "PTE", name: "KAVIDU HWD", phone: "0766825632" },
+{ serviceNo: "S/H100016", rank: "L/CPL", name: "KARUNARATHNE KPS", phone: "0774359049" },
+{ serviceNo: "S/H100018", rank: "L/CPL", name: "SILWA APPD", phone: "0776539704" },
+{ serviceNo: "S/H100019", rank: "L/CPL", name: "JAYARUWAN BGN", phone: "0741564526" },
+{ serviceNo: "S/H100045", rank: "L/CPL", name: "KUMARATHUNGA PG", phone: "0711670272" },
+{ serviceNo: "S/H100049", rank: "CPL", name: "UDAYAKUMARA HMS", phone: "0767438399" },
+{ serviceNo: "S/H100050", rank: "L/CPL", name: "KUMARASINHA PN", phone: "0772125304" },
+{ serviceNo: "S/H100052", rank: "CPL", name: "KUMARA IGSN", phone: "0771556920" },
+{ serviceNo: "S/H100057", rank: "CPL", name: "LEWLIYADDA KMPDSM", phone: "0775083045" },
+{ serviceNo: "S/H100059", rank: "L/CPL", name: "DISSANAYAKA RMWR", phone: "0710103197" },
+{ serviceNo: "S/H100061", rank: "L/CPL", name: "KUMARA SAV", phone: "0714538213" },
+{ serviceNo: "S/H100065", rank: "L/CPL", name: "EKANAYAKA EMCS", phone: "0743403486" },
+{ serviceNo: "S/H100068", rank: "L/CPL", name: "GUNASEKARA RMTS", phone: "0702337296" },
+{ serviceNo: "S/H100104", rank: "CPL", name: "JAYARATHNA NGS", phone: "0770719693" },
+{ serviceNo: "S/H100144", rank: "L/CPL", name: "MENAKA PG", phone: "0711629253" },
+{ serviceNo: "S/H100173", rank: "L/CPL", name: "NISANTHA G", phone: "0774641952" },
+{ serviceNo: "S/H100185", rank: "L/CPL", name: "RATHNATHILAKE UP", phone: "0776988451" },
+{ serviceNo: "S/H100219", rank: "L/CPL", name: "PRIYANTHA KLN", phone: "0769804428" },
+{ serviceNo: "S/H100228", rank: "L/CPL", name: "ANURA OK", phone: "0770308399" },
+{ serviceNo: "S/H100264", rank: "L/CPL", name: "HERATH HMSB", phone: "0715967979" },
+{ serviceNo: "S/H100267", rank: "L/CPL", name: "SANJEEWA GHGN", phone: "0741715414" },
+{ serviceNo: "S/H100270", rank: "CPL", name: "GAJANAYAKA KMSG", phone: "0760299495" },
+{ serviceNo: "S/H100280", rank: "L/CPL", name: "RANJITH BANDARA KM", phone: "0777655388" },
+{ serviceNo: "S/H100285", rank: "L/CPL", name: "GUNATHILAKA UGCM", phone: "0701313819" },
+{ serviceNo: "S/H100293", rank: "L/CPL", name: "HEWAGE DHMKL", phone: "0768473032" },
+{ serviceNo: "S/H100294", rank: "L/CPL", name: "GUNASEAKARA HMWGBN", phone: "0768264351" },
+{ serviceNo: "S/H100295", rank: "L/CPL", name: "NAMALKUMARA DMS", phone: "0776584279" },
+{ serviceNo: "S/H100331", rank: "L/CPL", name: "JAYARATHNA HLSN", phone: "0768720170" },
+{ serviceNo: "S/H100337", rank: "L/CPL", name: "INDIKA WACL", phone: "0777033564" },
+{ serviceNo: "S/H100343", rank: "PTE", name: "THILAKARATHNA BANDARA TM", phone: "0769945724" },
+{ serviceNo: "S/H100379", rank: "L/CPL", name: "PERERA PMLS", phone: "0767946696" },
+{ serviceNo: "S/H100395", rank: "L/CPL", name: "ABESINGHE AMC", phone: "0766353610" },
+{ serviceNo: "S/H100398", rank: "L/CPL", name: "JAYASOORIYA JMML", phone: "0711867927" },
+{ serviceNo: "S/H100405", rank: "L/CPL", name: "BANDARA WMC", phone: "0766587931" },
+{ serviceNo: "S/H100406", rank: "L/CPL", name: "LIYANAARACHCHI LAPT", phone: "0765791408" },
+{ serviceNo: "S/H100415", rank: "L/CPL", name: "ABEYRATHNA KAN", phone: "0743258088" },
+{ serviceNo: "S/H100429", rank: "CPL", name: "DISANAYAKA DMKM", phone: "0767049535" },
+{ serviceNo: "S/H100461", rank: "PTE", name: "KUMARA MPWR", phone: "0767231786" },
+{ serviceNo: "S/H100484", rank: "L/CPL", name: "Munidasa LMRSK", phone: "0714986380" },
+{ serviceNo: "S/H100488", rank: "L/CPL", name: "Podirathna JAKP", phone: "0762270058" },
+{ serviceNo: "S/H100574", rank: "WO II", name: "Asoka Ranjith SP", phone: "0707273551" },
+{ serviceNo: "S/H100664", rank: "WO II", name: "Edirisingha EASB", phone: "0706315708" },
+{ serviceNo: "S/H100675", rank: "SGT", name: "MAHINDA KUMARA WP", phone: "0777480283" },
+{ serviceNo: "S/H100679", rank: "WO II", name: "Ganegoda DSC", phone: "0777113822" },
+{ serviceNo: "S/H100692", rank: "CPL", name: "Premakumara DGS", phone: "0706067430" },
+{ serviceNo: "S/H100694", rank: "CPL", name: "RANADEWA NPGIK", phone: "0775283918" },
+{ serviceNo: "S/H100709", rank: "SGT", name: "JAYASINGHE JHMSK", phone: "0772479917" },
+{ serviceNo: "S/H100721", rank: "L/CPL", name: "SUJEEWA KUMARA A", phone: "0741534121" },
+{ serviceNo: "S/H100722", rank: "S/SGT", name: "Indra Kumara GS", phone: "0715168847" },
+{ serviceNo: "S/H100725", rank: "CPL", name: "GUNATHILAKA KS", phone: "0762964136" },
+{ serviceNo: "S/H100736", rank: "SGT", name: "Kulathunga KNK", phone: "0757586153" },
+{ serviceNo: "S/H100738", rank: "CPL", name: "Weerakoon RLK", phone: "0760606184" },
+{ serviceNo: "S/H100785", rank: "CPL", name: "CHATHURANGA PM", phone: "0718912379" },
+{ serviceNo: "S/H100800", rank: "L/CPL", name: "PUSHPA KUMARA MAS", phone: "0706717943" },
+{ serviceNo: "S/H100817", rank: "PTE", name: "GAMINI DM", phone: "0762778644" },
+{ serviceNo: "S/H100819", rank: "L/CPL", name: "KARUNARATHNE KSP", phone: "0713734722" },
+{ serviceNo: "S/H100822", rank: "L/CPL", name: "SENEVIRATHNE AMMGPNK", phone: "0766692974" },
+{ serviceNo: "S/H100843", rank: "L/CPL", name: "Priyadarshana II", phone: "0779038317" },
+{ serviceNo: "S/H100851", rank: "L/CPL", name: "JAYARATHNE WAU", phone: "0760879722" },
+{ serviceNo: "S/H100854", rank: "PTE", name: "HERATH HMW", phone: "0776719343" },
+{ serviceNo: "S/H100860", rank: "L/CPL", name: "DISANAYAKA DMC", phone: "0770168171" },
+{ serviceNo: "S/H100861", rank: "L/CPL", name: "DISANAYAKA NS", phone: "0765583306" },
+{ serviceNo: "S/H100862", rank: "L/CPL", name: "ABERATHNE ULDK", phone: "0716632153" },
+{ serviceNo: "S/H100876", rank: "CPL", name: "WIJEWARDHANA MGM", phone: "0771486733" },
+{ serviceNo: "S/H100879", rank: "CPL", name: "PRIYANTHA UAK", phone: "0775448712" },
+{ serviceNo: "S/H100893", rank: "L/CPL", name: "JAYARATHNE WG", phone: "0765626219" },
+{ serviceNo: "S/H100897", rank: "L/CPL", name: "BANDARA IMSS", phone: "0704566701" },
+{ serviceNo: "S/H100898", rank: "L/CPL", name: "WICKRAMASINGHE AAKS", phone: "0769437086" },
+{ serviceNo: "S/H100903", rank: "L/CPL", name: "JAYASUNDARA SSP", phone: "0704184434" },
+{ serviceNo: "S/H100911", rank: "L/CPL", name: "JAYAWARDHANA TMA", phone: "0743593275" },
+{ serviceNo: "S/H100928", rank: "L/CPL", name: "PADMASIRI JMN", phone: "0761559327" },
+{ serviceNo: "S/H100936", rank: "PTE", name: "KUMARA JWS", phone: "0712983639" },
+{ serviceNo: "S/H100946", rank: "CPL", name: "DHAMMIKA KUMARA PMASW", phone: "0774907887" },
+{ serviceNo: "S/H100952", rank: "CPL", name: "BANDARA UGGJ", phone: "0752038012" },
+{ serviceNo: "S/H100997", rank: "CPL", name: "PRADEEP KUMARA KKT", phone: "0779756987" },
+{ serviceNo: "S/H101009", rank: "L/CPL", name: "PREMATHILAKA DM", phone: "0766809412" },
+{ serviceNo: "S/H101013", rank: "L/CPL", name: "RATHNAYAKA RMLK", phone: "0761186671" },
+{ serviceNo: "S/H101016", rank: "L/CPL", name: "JAYASEKARA JMCP", phone: "0778415769" },
+{ serviceNo: "S/H101025", rank: "CPL", name: "SARATH KUMARA HD", phone: "0764749957" },
+{ serviceNo: "S/H101028", rank: "L/CPL", name: "RUWAN KUMARA KKD", phone: "0771918002" },
+{ serviceNo: "S/H101030", rank: "CPL", name: "CHAMARA SDS", phone: "0714652747" },
+{ serviceNo: "S/H101031", rank: "L/CPL", name: "BANDARA SLN", phone: "0710868759" },
+{ serviceNo: "S/H101036", rank: "L/CPL", name: "NANDASENA SSK", phone: "0774039638" },
+{ serviceNo: "S/H101038", rank: "L/CPL", name: "PRABATH NT", phone: "0764195707" },
+{ serviceNo: "S/H101041", rank: "L/CPL", name: "WEERASINGHE ADBSS", phone: "0776339227" },
+{ serviceNo: "S/H101055", rank: "L/CPL", name: "RAJAPAKSHA ASKJ", phone: "0762292094" },
+{ serviceNo: "S/H101079", rank: "L/CPL", name: "LALANTHA RWVM", phone: "0772612279" },
+{ serviceNo: "S/H101080", rank: "L/CPL", name: "GUNATHILAKA BLCM", phone: "0762981296" },
+{ serviceNo: "S/H101097", rank: "L/CPL", name: "MADURANGA HLN", phone: "0773551719" },
+{ serviceNo: "S/H101103", rank: "L/CPL", name: "DINESH SK", phone: "0774651408" },
+{ serviceNo: "S/H101192", rank: "CPL", name: "WEJERATHNA WM", phone: "0760696336" },
+{ serviceNo: "S/H101203", rank: "L/CPL", name: "KUMARA DRWMCBN", phone: "0743862165" },
+{ serviceNo: "S/H101241", rank: "L/CPL", name: "DHRAMASIRI KGBL", phone: "0764825462" },
+{ serviceNo: "S/H101258", rank: "L/CPL", name: "PRIYANKARA HAASP", phone: "0768874063" },
+{ serviceNo: "S/H101284", rank: "PTE", name: "Dasanayaka DMKGSN", phone: "0762802950" },
+{ serviceNo: "S/H101314", rank: "CPL", name: "Pushpa kumara AGA", phone: "0760675960" },
+{ serviceNo: "S/H101318", rank: "PTE", name: "Buddadasa BT", phone: "0763971477" },
+{ serviceNo: "S/H101333", rank: "PTE", name: "Pushpa kumara THS", phone: "0701485599" },
+{ serviceNo: "S/H101334", rank: "L/CPL", name: "Tharanga THS", phone: "0771778739" },
+{ serviceNo: "S/H101337", rank: "L/CPL", name: "Bandusena KPMG", phone: "0741542880" },
+{ serviceNo: "S/H101364", rank: "L/CPL", name: "Wijebandara HMTD", phone: "0741864671" },
+{ serviceNo: "S/H101378", rank: "PTE", name: "Adikari AMCP", phone: "0772385108" },
+{ serviceNo: "S/H101398", rank: "L/CPL", name: "Padmasiri EDU", phone: "0779807252" },
+{ serviceNo: "S/H101419", rank: "PTE", name: "Priyadarshana KLS", phone: "0716881048" },
+{ serviceNo: "S/H101430", rank: "L/CPL", name: "Deshapriya HMAK", phone: "0767409863" },
+{ serviceNo: "S/H101446", rank: "L/CPL", name: "ABEYKOON AMRS", phone: "0760707638" },
+{ serviceNo: "S/H101458", rank: "L/CPL", name: "AJITHKUMARA DM", phone: "0766256959" },
+{ serviceNo: "S/H101465", rank: "L/CPL", name: "ATHAPATHTHU AKMMM", phone: "0768469219" },
+{ serviceNo: "S/H101466", rank: "L/CPL", name: "SENARATHNE NMMK", phone: "0766197240" },
+{ serviceNo: "S/H101478", rank: "L/CPL", name: "DISSANAYAKA DMWD", phone: "0767973096" },
+{ serviceNo: "S/H101495", rank: "L/CPL", name: "Viduranga Karunarathna R", phone: "0706143009" },
+{ serviceNo: "S/H101538", rank: "L/CPL", name: "EKANAYAKA WMSK", phone: "0772850025" },
+{ serviceNo: "S/H101550", rank: "L/CPL", name: "JAYASINGHA KGMS", phone: "0742281816" },
+{ serviceNo: "S/H101585", rank: "L/CPL", name: "Samarasingha WAPSJ", phone: "0705920697" },
+{ serviceNo: "S/H101640", rank: "L/CPL", name: "Basnayaka BMPM", phone: "0704248995" },
+{ serviceNo: "S/H101650", rank: "L/CPL", name: "JAYARATHNA KMHD", phone: "0716356794" },
+{ serviceNo: "S/H101661", rank: "L/CPL", name: "Manjula RM", phone: "0764225058" },
+{ serviceNo: "S/H101775", rank: "L/CPL", name: "Subasingha SMM", phone: "0742947756" },
+{ serviceNo: "S/H101776", rank: "L/CPL", name: "Nimalsiri MM", phone: "0760127250" },
+{ serviceNo: "S/H101781", rank: "PTE", name: "Gunasena AM", phone: "0761803072" },
+{ serviceNo: "S/H101788", rank: "L/CPL", name: "Kumarasingha BGHM", phone: "0703803765" },
+{ serviceNo: "S/H101811", rank: "L/CPL", name: "Dasanayaka DMSM", phone: "0760563507" },
+{ serviceNo: "S/H101836", rank: "L/CPL", name: "Bandara HMWD", phone: "0703301404" },
+{ serviceNo: "S/H101840", rank: "L/CPL", name: "Dilanjude JA", phone: "0767515008" },
+{ serviceNo: "S/H101854", rank: "L/CPL", name: "SENARATHNE RBSP", phone: "0773363669" },
+{ serviceNo: "S/H101865", rank: "L/CPL", name: "Muthubanda RM", phone: "0702256358" },
+{ serviceNo: "S/H101893", rank: "L/CPL", name: "Wickramasingha HGN", phone: "0718995973" },
+{ serviceNo: "S/H101903", rank: "PTE", name: "Chandrasiri RHAMN", phone: "0702800154" },
+{ serviceNo: "S/H101905", rank: "PTE", name: "MADUWANTHA WD", phone: "0761289498" },
+{ serviceNo: "S/H101906", rank: "PTE", name: "Fernando SBTP", phone: "0762440483" },
+{ serviceNo: "S/H101978", rank: "PTE", name: "Jayathilaka RMMTD", phone: "0760878218" },
+{ serviceNo: "S/H101989", rank: "PTE", name: "Laksman Peiris LPAP", phone: "0772139754" },
+{ serviceNo: "S/H101991", rank: "PTE", name: "THILAKARATHNA EMNG", phone: "0718827886" },
+{ serviceNo: "S/H101995", rank: "PTE", name: "Jayalal LBR", phone: "0704977278" },
+{ serviceNo: "S/H101998", rank: "PTE", name: "Abeysingha AMSK", phone: "0740558135" },
+{ serviceNo: "S/H102005", rank: "PTE", name: "Weerakoon WTD", phone: "0702089522" },
+{ serviceNo: "S/H102010", rank: "PTE", name: "DE SILVA HAPM", phone: "0716148284" },
+{ serviceNo: "S/H102012", rank: "PTE", name: "Bulathsinghala BSDM", phone: "0715828807" },
+{ serviceNo: "S/H102023", rank: "PTE", name: "Bandara AMGJ", phone: "0769691552" },
+{ serviceNo: "S/H102024", rank: "PTE", name: "Wickramasingha HM", phone: "0742169877" },
+{ serviceNo: "S/H102030", rank: "PTE", name: "Madusanka LMD", phone: "0761186605" },
+{ serviceNo: "S/H102033", rank: "PTE", name: "Rathnayaka YGV", phone: "0702655665" },
+{ serviceNo: "S/H102042", rank: "PTE", name: "Wimalasooriya HM", phone: "0765339161" },
+{ serviceNo: "S/H102043", rank: "PTE", name: "Bandara AMSM", phone: "0765563198" },
+{ serviceNo: "S/H102061", rank: "PTE", name: "Rasnayaka RMJH", phone: "0768501575" },
+{ serviceNo: "S/H102066", rank: "PTE", name: "De Silva LHLD", phone: "0704247621" },
+{ serviceNo: "S/H102068", rank: "PTE", name: "Premathilaka PDSM", phone: "0705262990" },
+{ serviceNo: "S/H102098", rank: "PTE", name: "Pushpa Kumara AGP", phone: "0775429590" },
+{ serviceNo: "S/H102101", rank: "PTE", name: "Chathuranga Herath KHMSS", phone: "0764095129" },
+{ serviceNo: "S/H102114", rank: "PTE", name: "Warawaththa WGKPK", phone: "0715664338" },
+{ serviceNo: "S/H102128", rank: "PTE", name: "Jayathissa JLSK", phone: "0712359967" },
+{ serviceNo: "S/H102143", rank: "PTE", name: "Wickramasinghe WSM", phone: "0770112907" },
+{ serviceNo: "S/H102158", rank: "PTE", name: "Sandaruwan KV", phone: "0779645601" },
+{ serviceNo: "S/H102217", rank: "PTE", name: "Dilshan SDA", phone: "0764012245" },
+{ serviceNo: "S/H102219", rank: "L/CPL", name: "Wijesooriya GRDL", phone: "0776816035" },
+{ serviceNo: "S/H102221", rank: "PTE", name: "Chandrasena SD", phone: "0765263895" },
+{ serviceNo: "S/H102231", rank: "PTE", name: "Siriwardhana DMMS", phone: "0717320282" },
+{ serviceNo: "S/H102250", rank: "PTE", name: "De Silva SAPK", phone: "0717438338" },
+{ serviceNo: "S/H102276", rank: "PTE", name: "Wijerathna TN", phone: "0702177783" },
+{ serviceNo: "S/H102299", rank: "PTE", name: "Nipun Shakthi KM", phone: "0710841019" },
+{ serviceNo: "S/H102309", rank: "PTE", name: "Gunarathna LGPP", phone: "0716423705" },
+{ serviceNo: "S/H102310", rank: "PTE", name: "Wanasingha WMSK", phone: "0701026482" },
+{ serviceNo: "S/H102331", rank: "CPL", name: "KAHANDAWA KASMK", phone: "0710553267" },
+{ serviceNo: "S/H102336", rank: "SGT", name: "Gunasekara MMGA", phone: "0778014623" },
+{ serviceNo: "S/H102340", rank: "CPL", name: "RANJITH KUMARA MUML", phone: "0705506861" },
+{ serviceNo: "S/H102341", rank: "CPL", name: "PUSPAKUMARA KDC", phone: "0762102968" },
+{ serviceNo: "S/H102342", rank: "L/CPL", name: "CHANDRAKUMARA HVM", phone: "0718645406" },
+{ serviceNo: "S/H102343", rank: "L/CPL", name: "LAKMAL HMS", phone: "0701491353" },
+{ serviceNo: "S/H102345", rank: "L/CPL", name: "THUSHARA L", phone: "0741148467" },
+{ serviceNo: "S/H102357", rank: "PTE", name: "Sandaruwan TMC", phone: "0773692485" },
+{ serviceNo: "S/H102361", rank: "PTE", name: "Sachinthaka RDR", phone: "0773163746" },
+{ serviceNo: "S/H102390", rank: "PTE", name: "Kumara IGLP", phone: "0712676178" },
+{ serviceNo: "S/H102399", rank: "PTE", name: "Sarath Kumara KMKG", phone: "0779320376" },
+{ serviceNo: "S/H102406", rank: "PTE", name: "Kumara DMAN", phone: "0768797203" },
+{ serviceNo: "S/H102430", rank: "PTE", name: "Chandrapala DN (COMPUTER OPERATOR)", phone: "0761254359" },
+{ serviceNo: "S/H102435", rank: "PTE", name: "Fernando DHAM", phone: "0775998090" },
+{ serviceNo: "S/H102438", rank: "PTE", name: "Dissanayaka JPK", phone: "0762288279" },
+{ serviceNo: "S/H102455", rank: "PTE", name: "Silwa JSN", phone: "0710851283" },
+{ serviceNo: "S/H102469", rank: "PTE", name: "Jayalath DM", phone: "0716143326" },
+{ serviceNo: "S/H102510", rank: "PTE", name: "Kekulandara KMPKGAP", phone: "0761293639" },
+{ serviceNo: "S/H102512", rank: "PTE", name: "Thushara SVK", phone: "0768879073" },
+{ serviceNo: "S/H102529", rank: "PTE", name: "Kumara KP", phone: "0705332016" },
+{ serviceNo: "S/H102532", rank: "PTE", name: "Bandara GGS", phone: "0760949961" },
+{ serviceNo: "S/H102554", rank: "PTE", name: "Sandaruwan KW", phone: "0743362917" },
+{ serviceNo: "S/H102556", rank: "PTE", name: "Chathuranga WHGH", phone: "0762631113" },
+{ serviceNo: "S/H102576", rank: "PTE", name: "Bandara WMKI", phone: "0711281994" },
+{ serviceNo: "S/H102581", rank: "L/CPL", name: "WIJESINGHE WS", phone: "0774961566" },
+{ serviceNo: "S/H102588", rank: "L/CPL", name: "AMARASINGHE S", phone: "0762902747" },
+{ serviceNo: "S/H102592", rank: "CPL", name: "BANDARA RAAR", phone: "0778854428" },
+{ serviceNo: "S/H102621", rank: "PTE", name: "PATHIRANA RMRN", phone: "0703003285" },
+{ serviceNo: "S/H102623", rank: "PTE", name: "BANDARA WMD", phone: "0740402998" },
+{ serviceNo: "S/H102656", rank: "PTE", name: "KODIKARA KGHP", phone: "0772589644" },
+{ serviceNo: "S/H102676", rank: "PTE", name: "KUMARA HPDN", phone: "0767194590" },
+{ serviceNo: "S/H102689", rank: "PTE", name: "WEJERATHNA KWNS", phone: "0770523111" },
+{ serviceNo: "S/H102706", rank: "CPL", name: "Ranasingha B", phone: "0778293924" },
+{ serviceNo: "S/H102707", rank: "L/CPL", name: "KUMARA KCS", phone: "0718901983" },
+{ serviceNo: "S/H102714", rank: "CPL", name: "Jothipala GDGM", phone: "0771582407" },
+{ serviceNo: "S/H102722", rank: "PTE", name: "MADHUSANKA RRP", phone: "0702940687" },
+{ serviceNo: "S/H102723", rank: "PTE", name: "KUMARA HMNA", phone: "0772189216" },
+{ serviceNo: "S/H102724", rank: "PTE", name: "RATHNAYAKA MMMA", phone: "0768408109" },
+{ serviceNo: "S/H102772", rank: "PTE", name: "WEERASINGHE RDDK", phone: "0776226437" },
+{ serviceNo: "S/H102785", rank: "PTE", name: "ABESINGHA AMTL", phone: "0762315066" },
+{ serviceNo: "S/H102849", rank: "PTE", name: "PANANWALA PGASDL", phone: "0761028451" },
+{ serviceNo: "S/H102882", rank: "PTE", name: "SAMATHUN SMWGHD", phone: "0760086726" },
+{ serviceNo: "S/H102887", rank: "PTE", name: "PREMACHANDRA LHGHD", phone: "0763144638" },
+{ serviceNo: "S/H102893", rank: "PTE", name: "GODAGANDENIYA GDPHL", phone: "0764678089" },
+{ serviceNo: "S/H102897", rank: "PTE", name: "DARMASIRI RMS", phone: "0762358924" },
+{ serviceNo: "S/H102902", rank: "L/CPL", name: "HERATH NHMKJB", phone: "0741183290" },
+{ serviceNo: "S/H102950", rank: "PTE", name: "MADUSHANKA AGSL", phone: "0705243748" },
+{ serviceNo: "S/H102953", rank: "PTE", name: "KUMARA KNUBS", phone: "0783738448" },
+{ serviceNo: "S/H102955", rank: "PTE", name: "BANDARA KMMS", phone: "0760608796" },
+{ serviceNo: "S/H102956", rank: "PTE", name: "MALDANEYA MGND", phone: "0701513243" },
+{ serviceNo: "S/H102961", rank: "L/CPL", name: "MALDENIYA MGCM", phone: "0702290282" },
+{ serviceNo: "S/H102996", rank: "PTE", name: "GAMINI GUS", phone: "0761727126" },
+{ serviceNo: "S/H103069", rank: "PTE", name: "DISANAYAKE DMLK", phone: "0773485536" },
+{ serviceNo: "S/H103073", rank: "PTE", name: "RAJAPAKSHA RPSUS", phone: "0775036395" },
+{ serviceNo: "S/H103075", rank: "PTE", name: "SENEVIRATNA AMID", phone: "0779389320" },
+{ serviceNo: "S/H103080", rank: "PTE", name: "KASTHURI TPGM", phone: "0770623856" },
+{ serviceNo: "S/H103081", rank: "PTE", name: "THARAKA WAAS", phone: "0769830276" },
+{ serviceNo: "S/H103085", rank: "PTE", name: "GAMAGE KGPLS", phone: "0701513059" },
+{ serviceNo: "S/H103235", rank: "PTE", name: "THENNAKOON HMSM", phone: "0714991553" },
+{ serviceNo: "S/H103247", rank: "PTE", name: "KUMARA WMS", phone: "0779188728" },
+{ serviceNo: "S/H103276", rank: "PTE", name: "SANKALPA JPVU", phone: "0781464589" },
+{ serviceNo: "S/H103279", rank: "PTE", name: "KULATHUNGA KMSB", phone: "0753784141" },
+{ serviceNo: "S/H103284", rank: "PTE", name: "ILEPERUMA IAB", phone: "0741663603" },
+{ serviceNo: "S/H103321", rank: "PTE", name: "BANDARA SABBPI", phone: "0769235335" },
+{ serviceNo: "S/H103322", rank: "PTE", name: "MADUSHANKA HCC", phone: "0774827392" },
+{ serviceNo: "S/H103343", rank: "PTE", name: "SENADEERA HPDID", phone: "0769044891" },
+{ serviceNo: "S/H103350", rank: "PTE", name: "SURAWEERA SGLC", phone: "0704938155" },
+{ serviceNo: "S/H103382", rank: "PTE", name: "SAMRASINGHA DRS", phone: "0763365382" },
+{ serviceNo: "S/H103417", rank: "PTE", name: "ABEYSINGHA AHMDL", phone: "0717048560" },
+{ serviceNo: "S/H103422", rank: "L/CPL", name: "GUNAWARDHANA KAL", phone: "0718929950" },
+{ serviceNo: "S/H103425", rank: "PTE", name: "SAMPATH DI", phone: "0781371316" },
+{ serviceNo: "S/H103457", rank: "PTE", name: "SANDARUWAN KAGSL", phone: "0713687050" },
+{ serviceNo: "S/H103492", rank: "PTE", name: "WIJESOORIYA GCS", phone: "0763943931" },
+{ serviceNo: "S/H103493", rank: "PTE", name: "MADURANGA KMG", phone: "0775237897" },
+{ serviceNo: "S/H103494", rank: "PTE", name: "PUSHPAKUMARA KD", phone: "0718722336" },
+{ serviceNo: "S/H103496", rank: "PTE", name: "MADUSHANKA RMT", phone: "0778302747" },
+{ serviceNo: "S/H103505", rank: "PTE", name: "KUMARATHUNGA RDNP", phone: "0704140005" },
+{ serviceNo: "S/H103507", rank: "PTE", name: "UPATHISSA GUMN", phone: "0774034603" },
+{ serviceNo: "S/H103521", rank: "PTE", name: "PRIYASHANTHA UDD", phone: "0763876531" },
+{ serviceNo: "S/H103533", rank: "PTE", name: "NAWARTHENA HMRD", phone: "0762202079" },
+{ serviceNo: "S/H103595", rank: "PTE", name: "HETTIGAMAGE MPK", phone: "0768282301" },
+{ serviceNo: "S/H103606", rank: "PTE", name: "DISANAYAKA DMRM", phone: "0778947328" },
+{ serviceNo: "S/H103607", rank: "PTE", name: "RANDENIYA RAJS", phone: "0742770260" },
+{ serviceNo: "S/H103608", rank: "PTE", name: "JAYATHISSA RMPM", phone: "0765851697" },
+{ serviceNo: "S/H103609", rank: "PTE", name: "KUMARA JMLS", phone: "0757741002" },
+{ serviceNo: "S/H103614", rank: "PTE", name: "WICKRAMASINGHA TBSRS", phone: "0760567204" },
+{ serviceNo: "S/H103616", rank: "PTE", name: "WICKRAMASINGHA TBULS", phone: "0743548663" },
+{ serviceNo: "S/H103621", rank: "PTE", name: "KUMARA AMDS", phone: "0762552807" },
+{ serviceNo: "S/H103623", rank: "PTE", name: "BANDARA KDSK", phone: "0727915168" }
+];
+    // DOM Elements
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultsDropdown = document.getElementById('resultsDropdown');
+    const detailPopupOverlay = document.getElementById('detailPopup');
+    const closePopupBtn = document.getElementById('closePopup');
+    const callBtn = document.getElementById('callBtn');
+    const dataCount = document.getElementById('dataCount');
+    const exportBtn = document.getElementById('exportBtn');
+    const clearDataBtn = document.getElementById('clearDataBtn');
+    const pinModal = document.getElementById('pinModal');
+    const pinInput = document.getElementById('pinInput');
+    const pinError = document.getElementById('pinError');
+    const confirmPin = document.getElementById('confirmPin');
+    const cancelPin = document.getElementById('cancelPin');
 
-        // DOM Elements
-        const searchInput = document.getElementById('searchInput');
-        const clearBtn = document.getElementById('clearBtn');
-        const resultsDropdown = document.getElementById('resultsDropdown');
-        const detailPopup = document.getElementById('detailPopup');
-        const closePopup = document.getElementById('closePopup');
-        const callBtn = document.getElementById('callBtn');
-        const dataCount = document.getElementById('dataCount');
-        const importBtn = document.getElementById('importBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const clearDataBtn = document.getElementById('clearDataBtn');
-        const pinModal = document.getElementById('pinModal');
-        const pinInput = document.getElementById('pinInput');
-        const pinError = document.getElementById('pinError');
-        const confirmPin = document.getElementById('confirmPin');
-        const cancelPin = document.getElementById('cancelPin');
-        const fileUploadModal = document.getElementById('fileUploadModal');
-        const fileDropArea = document.getElementById('fileDropArea');
-        const fileInput = document.getElementById('fileInput');
-        const browseFileBtn = document.getElementById('browseFileBtn');
-        const uploadFileBtn = document.getElementById('uploadFileBtn');
-        const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+    // Search options
+    const searchName = document.getElementById('searchName');
+    const searchServiceNo = document.getElementById('searchServiceNo');
+    const searchPhone = document.getElementById('searchPhone');
 
-        // Search options
-        const searchName = document.getElementById('searchName');
-        const searchServiceNo = document.getElementById('searchServiceNo');
-        const searchPhone = document.getElementById('searchPhone');
+    // Popup elements
+    const popupRank = document.getElementById('popupRank');
+    const popupName = document.getElementById('popupName');
+    const popupService = document.getElementById('popupService');
+    const popupServiceDetail = document.getElementById('popupServiceDetail');
+    const popupPhone = document.getElementById('popupPhone');
 
-        // Popup elements
-        const popupRank = document.getElementById('popupRank');
-        const popupName = document.getElementById('popupName');
-        const popupService = document.getElementById('popupService');
-        const popupServiceDetail = document.getElementById('popupServiceDetail');
-        const popupPhone = document.getElementById('popupPhone');
+    // Initialize
+    let currentSearchTerm = '';
+    let selectedPerson = null;
 
-        // Initialize
-        let currentSearchTerm = '';
-        let selectedPerson = null;
-        let selectedFile = null;
+    // Update data count
+    function updateDataCount() {
+        dataCount.textContent = personnelData.length;
+    }
 
-        // Update data count
-        function updateDataCount() {
-            dataCount.textContent = personnelData.length;
-        }
-
-        // Show/hide clear button
-        searchInput.addEventListener('input', function() {
-            currentSearchTerm = this.value.trim();
-            
-            if (currentSearchTerm) {
-                clearBtn.style.display = 'block';
-                performSearch(currentSearchTerm);
-            } else {
-                clearBtn.style.display = 'none';
-                hideResults();
-            }
-        });
-
-        // Clear search
-        clearBtn.addEventListener('click', function() {
-            searchInput.value = '';
-            currentSearchTerm = '';
+    // Show/hide clear button
+    searchInput.addEventListener('input', function() {
+        currentSearchTerm = this.value.trim();
+        
+        if (currentSearchTerm) {
+            clearBtn.style.display = 'block';
+            performSearch(currentSearchTerm);
+        } else {
             clearBtn.style.display = 'none';
             hideResults();
-            searchInput.focus();
-        });
+        }
+    });
 
-        // Perform search
-        function performSearch(term) {
-            const searchByName = searchName.checked;
-            const searchByServiceNo = searchServiceNo.checked;
-            const searchByPhone = searchPhone.checked;
+    // Clear search
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        currentSearchTerm = '';
+        clearBtn.style.display = 'none';
+        hideResults();
+        searchInput.focus();
+    });
+
+    // Perform search
+    function performSearch(term) {
+        const searchByName = searchName.checked;
+        const searchByServiceNo = searchServiceNo.checked;
+        const searchByPhone = searchPhone.checked;
+        
+        const searchTerm = term.toLowerCase();
+        
+        const results = personnelData.filter(person => {
+            let match = false;
             
-            const searchTerm = term.toLowerCase();
-            
-            const results = personnelData.filter(person => {
-                let match = false;
-                
-                // Search by name
-                if (searchByName) {
-                    const fullName = `${person.rank} ${person.name}`.toLowerCase();
-                    if (fullName.includes(searchTerm) || person.name.toLowerCase().includes(searchTerm)) {
-                        match = true;
-                    }
-                }
-                
-                // Search by service number
-                if (searchByServiceNo && person.serviceNo.toLowerCase().includes(searchTerm)) {
+            // Search by name
+            if (searchByName) {
+                const fullName = `${person.rank} ${person.name}`.toLowerCase();
+                if (fullName.includes(searchTerm) || person.name.toLowerCase().includes(searchTerm)) {
                     match = true;
                 }
-                
-                // Search by phone
-                if (searchByPhone && person.phone.includes(searchTerm)) {
-                    match = true;
-                }
-                
-                return match;
-            });
-            
-            displayResults(results, searchTerm);
-        }
-
-        // Display results in dropdown
-        function displayResults(results, searchTerm) {
-            if (results.length === 0) {
-                resultsDropdown.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-user-slash"></i>
-                        <p>No personnel found for "${searchTerm}"</p>
-                    </div>
-                `;
-                resultsDropdown.classList.add('active');
-                return;
             }
             
-            let resultsHTML = '';
-            
-            results.forEach((person, index) => {
-                const highlightedName = highlightText(`${person.rank} ${person.name}`, searchTerm);
-                const highlightedService = highlightText(person.serviceNo, searchTerm);
-                const highlightedPhone = highlightText(person.phone, searchTerm);
-                
-                resultsHTML += `
-                    <div class="result-item" data-index="${index}">
-                        <div class="result-info">
-                            <div class="result-name">${highlightedName}</div>
-                            <div class="result-details">
-                                <span class="result-service">${highlightedService}</span>
-                                <span class="result-phone">${highlightedPhone}</span>
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-right result-arrow"></i>
-                    </div>
-                `;
-            });
-            
-            resultsDropdown.innerHTML = resultsHTML;
-            resultsDropdown.classList.add('active');
-            
-            // Add click events to results
-            document.querySelectorAll('.result-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    selectedPerson = personnelData[index];
-                    showDetailPopup(selectedPerson);
-                });
-            });
-        }
-
-        // Highlight matching text
-        function highlightText(text, searchTerm) {
-            if (!searchTerm) return text;
-            
-            const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
-            return text.replace(regex, '<span style="color: var(--primary-green); font-weight: 700;">$1</span>');
-        }
-
-        // Escape regex characters
-        function escapeRegex(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        // Hide results dropdown
-        function hideResults() {
-            resultsDropdown.classList.remove('active');
-        }
-
-        // Show detail popup
-        function showDetailPopup(person) {
-            popupRank.textContent = person.rank;
-            popupName.textContent = person.name;
-            popupService.textContent = person.serviceNo;
-            popupServiceDetail.textContent = person.serviceNo;
-            popupPhone.textContent = person.phone;
-            
-            // Update call button
-            callBtn.setAttribute('data-phone', person.phone);
-            callBtn.innerHTML = `<i class="fas fa-phone"></i> Call ${person.phone}`;
-            
-            // Show popup with animation
-            detailPopup.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            
-            // Hide search results
-            hideResults();
-        }
-
-        // Close popup
-        closePopup.addEventListener('click', function() {
-            detailPopup.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        });
-
-        // Close popup when clicking outside
-        detailPopup.addEventListener('click', function(e) {
-            if (e.target === this) {
-                detailPopup.classList.remove('active');
-                document.body.style.overflow = 'auto';
+            // Search by service number
+            if (searchByServiceNo && person.serviceNo.toLowerCase().includes(searchTerm)) {
+                match = true;
             }
-        });
-
-        // Call button functionality
-        callBtn.addEventListener('click', function() {
-            const phoneNumber = this.getAttribute('data-phone');
-            if (phoneNumber) {
-                // In a real app, this would initiate a phone call
-                alert(`Calling ${phoneNumber}...\n\nIn a real application, this would initiate a phone call to the selected personnel.`);
+            
+            // Search by phone
+            if (searchByPhone && person.phone.includes(searchTerm)) {
+                match = true;
             }
+            
+            return match;
         });
+        
+        displayResults(results, searchTerm);
+    }
 
-        // Update search when checkboxes change
-        [searchName, searchServiceNo, searchPhone].forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                if (currentSearchTerm) {
-                    performSearch(currentSearchTerm);
-                }
-            });
-        });
-
-        // Initialize with full data
-        initializeWithAllData();
-
-        // Load all personnel data
-        function initializeWithAllData() {
-            // Parse your complete data
-            const fullData = `
-O/10691 Captain UST Dunuthilaka	0706575844
-O/10802 Captain K S C Karunarathna	0778216616
-O/11526 Lt RPKS Rajapaksha	0762287484
-O/11576 Captain(QM) KMD Sisira kumara	0711204364
-O/11705 2/Lt RM JANAKA	0771513795
-O/11743 2/Lt GBS Madhushan	0768584319
-O/6147 Major SH Sudusinghe	0773306405
-O/71526 Captain MN Madhushanka	0702000502
-O/8573 Major BHDS KARUNARATHNA	0773646374
-O/8702 Major RMTS ALAHAKOON	0762456346
-O/8970 Major GCO Siriwaradana	0710133727
-S/10H00198 S/SGT Punchi Banda TM	0760234669
-S/10H00505 PTE NawarathnaBanda NGWM	0771778960
-S/10H00981 L/CPL Susantha Bandara BG	0743590417
-S/10H01034 SGT Lalith Rohana ID	0756837962
-S/10H01190 S/SGT Wanasinghe WMN	0712377318
-S/10H01213 L/CPL Nawarathna RU	0771332349
-S/10H01220 CPL Indika RMG	0767196834
-S/10H01291 WO II NAWARATHNA SMSK	0742416645
-S/10H01293 CPL RANJITH KUMARA DM	0716860730
-S/10H01304 SGT Subhasinha SSK	0766624740
-S/10H01306 S/SGT Weerakoon WMAP	0775063395
-S/10H01310 S/SGT Chandrasiri WW	0760006728
-S/10H01311 L/CPL DISSANAYAKA DR	0772968057
-S/10H01323 CPL Sarath Kumara DS	0718912560
-S/10H01333 S/SGT WIJESINGHA PGDKR	0702234897
-S/10H01335 CPL Premadasa WAN	0775704084
-S/10H01344 PTE LANKATHILAKA PN	0740744298
-S/10H01347 WO II Rajapaksha RBRK	0706629855
-S/10H01349 SGT Karunathilaka MMN	0716148387
-S/10H01361 SGT Pradeep Kumara KW	0778092024
-S/10H01365 SGT Kelum HAJ	0710583230
-S/10H01372 CPL ROSHAN SANJEEWA GAN	0778334255
-S/10H01385 CPL PRIMAL WAS	0704964062
-S/10H01406 CPL THENNAKOON TMAGPK	0771385124
-S/10H01408 CPL WIMALASENA UGM	0772205643
-S/10H01441 L/CPL PUSHPA KUMARA WMBA	0767008267
-S/10H01446 L/CPL Herath HMUGSK	0778783197
-S/10H01448 SGT DHARMARATHNA HPGJK	0771191502
-S/10H01453 CPL GUNATHILAKA GG	0713021798
-S/10H01469 CPL Sisira Kumara RDS	0771998358
-S/10H01489 CPL RAJAPAKSHA RDSK	0769847105
-S/10H01491 CPL WANIGARATHNA WANK	0774142177
-S/10H01494 CPL TENNAKOON TMCP	0715847885
-S/10H01499 PTE PREDEEP KUMARA MR	0715141037
-S/10H01507 CPL WIJERATHNA AMAKGRS	0704313430
-S/10H01513 PTE SAMANTHA JA	0742693894
-S/10H01525 CPL SUBHASAN MVTA	00760143508
-S/10H01530 PTE PRIYADARSHANA NANS	0770368653
-S/10H01535 CPL PUSHPAKUMARA LPR	0703911946
-S/10H01538 CPL HERATH HMSA	0776627856
-S/10H01549 L/CPL JAYARATHNA LAMK	0704942842
-S/10H01561 CPL FERNANDO DIA	0718912283
-S/10H01578 L/CPL THUSHARA BMI	0762831374
-S/10H01581 CPL JAYAWEERA KMJC	0764038312
-S/10H01585 SGT Wanninayake WMJK	0703971729
-S/10H01599 CPL KUMARATHUNGA SK	0760085704
-S/10H01603 CPL WEERASINGHE MAA	0762594760
-S/10H01614 L/CPL JAYASINGHE HGRK	0710635777
-S/10H01619 L/CPL WIMALASIRI AMRSS	0766609736
-S/10H01640 CPL Sudharmasiri WPP	0776113520
-S/10H01649 L/CPL EKANAYAKA EMTR	0718912598
-S/10H01655 L/CPL NISHANTHA KUMARA RPG	0763092442
-S/10H01671 L/CPL PREMADASA KMAK	0776465955
-S/10H01690 CPL Dissanayaka DMBGPR	0769822025
-S/10H01702 L/CPL LASANTHA KUMARA GG	0707828807
-S/10H01724 PTE JAYASINGHE DJ	0766014353
-S/10H01744 L/CPL UPUL KUMARA GG	0713900286
-S/10H01749 L/CPL AJITH KUMARA BG	0719623194
-S/10H01752 L/CPL Wijesekara SL	0767218909
-S/10H01753 L/CPL PRIYANTHA KMA	0716320258
-S/10H01774 L/CPL SALGADU MSK	0776870158
-S/10H01775 L/CPL UPUL KD	0743242661
-S/10H01785 L/CPL BANDARA JMCT	0772749627
-S/10H01795 CPL HASINTHA CMG	0776125579
-S/10H01805 CPL SARATH KUMARA AM	0715729064
-S/10H01835 SGT Ajith Bandara PKM	0771536601
-S/10H01836 L/CPL Jayaweera RMCK	0710508492
-S/10H01837 CPL RAJAPAKSHA RHMAB	0715209077
-S/10H01839 L/CPL Lakmal APN	0704856701
-S/10H01843 PTE PREMARATHNA KGS	0753776176
-S/10H01851 L/CPL SADARUWAN GLD	0715654176
-S/12H00972 CPL JAYAWICKRAMA HAN	0773727690
-S/12H01013 SGT Jayasingha LSSK	0774394237
-S/12H01248 L/CPL WIPULASENA WRUK	0766454829
-S/12H01450 CPL SAMANTHA PB	0766428510
-S/15H00049 WO II PRIYANKA HJ	0718769738
-S/15H00177 CPL Rupasingha RB	0715174774
-S/15H00225 L/CPL Udaya Kumara SS	0778915866
-S/15H00236 SGT Gamage EGS	0764585144
-S/15H00237 SGT Gunawardana RMN	0704848230
-S/15H00242 SGT Saman Kumara WG	0770641606
-S/15H00244 SGT Senanayaka WMP	0771650225
-S/15H00252 SGT Priyadarshana HPI	0710580256
-S/15H00278 CPL NAWARATHNA KUMARA SMR	0704808006
-S/15H00291 CPL Duminda Bandara RM	0775088854
-S/15H00433 CPL TISSAWALANGU TMJP	0766811459
-S/15H00459 CPL PREMATHILAKA IDC	0779676880
-S/15H00468 CPL KEERTHISINGHA KB	0777916723
-S/15H00498 CPL DISSANAYAKA DRH	0772687597
-S/15H00526 CPL LAHIRU KUMARA HS	0760584958
-S/15H00581 L/CPL GARUSINGHE SD	0778356996
-S/15H00673 CPL WIJESUNDARA WMN	0705072050
-S/15H00724 L/CPL WIJESEKARA NGWMDB	0740567812
-S/15H00756 L/CPL THUSHARA PG	0770501863
-S/15H00807 L/CPL WIMALATHUNGA KDR	0710973369
-S/15H00876 PTE PIRIYADARASANA GAS	0764048447
-S/15H00944 L/CPL PATHMA KUMARA KWD	0702303802
-S/16H00271 WO II Jayasingha HPC	0772747972
-S/16H00277 WO II SAMPATH BPG	0710601622
-S/16H00281 SGT Madushanka KT	0771899439
-S/16H00316 WO II Ramisraja A	0761879353
-S/16H00328 SGT Priyadarshana MD	0769228114
-S/16H00364 CPL Ranjith MR	0779130363
-S/16H00374 SGT ILANGARATHNA TB	0786174994
-S/16H00440 L/CPL GUNASEKARA HB	0770471303
-S/16H00458 L/CPL SARATH KUMARA MG	0775562613
-S/16H00463 CPL CHANDANA MHMS	0774357607
-S/16H00550 CPL GUNASAKARA RMAB	0763565310
-S/16H00643 L/CPL HEMAJITH S	0714744243
-S/16H00679 L/CPL BANDARA KWTN	0743387195
-S/16H00700 SGT ASIRI KUMARA RGG	0702289839
-S/16H00726 L/CPL DISANAYAKA YGSR	0770246605
-S/16H00735 SGT PRASANNA KUMARA DSAS	0777444730
-S/16H00755 L/CPL KALUARACHCHI AKSG	0703527362
-S/17H00208 WO I HM Sunil Shantha	0767314050
-S/17H00223 CPL Rajakaruna UGAI	0771382461
-S/17H00241 WO II Thilakasiri BDLP	0760598163
-S/17H00276 CPL Asiri Bandara RDC	0761541446
-S/17H00432 SGT PUSHPAKUMARA DPAN	0740958391
-S/17H00540 CPL JAYAWEERA WD	0763426326
-S/17H00636 L/CPL ATHTHANAYAKA RMAI	0764086122
-S/20H00086 WO II Chandrapala AM	0761963075
-S/20H00149 CPL Anura Priyantha AKM	0769708987
-S/20H00160 CPL Ranjith Bandara TM	0761820004
-S/20H00163 CPL Kelum Kumara HMC	0766991848
-S/20H00198 CPL Jayasingha JPI	0711251810
-S/20H00207 CPL SANDARUWAN OVPS	0767263451
-S/20H00208 CPL ARIYARATHNA AL	0711791288
-S/20H00218 CPL RANASINGHE JMRK	0764012259
-S/20H00229 CPL SUMITH A	0769488302
-S/20H00236 CPL Jayarathna DWS	0762243269
-S/20H00262 CPL KOHOMBEPOLA HAKMJ	0774284948
-S/20H00263 CPL ROHITHA BANDARA C	0760843705
-S/20H00270 CPL DISSANAYAKA DMC	0741273586
-S/20H00281 CPL PRASANGA HACA	0769265937
-S/20H00289 CPL Pemasiri N	0779358825
-S/20H00297 CPL NAWARATHNA BANDA AG	0712787785
-S/20H00300 CPL PREMACHANDRA YG	0771579304
-S/20H00316 CPL MAYTHREEPALA RL	0765359032
-S/20H00329 CPL WIMALARATHNA DM	0742959088
-S/20H00330 CPL BANDARA EHMNP	0770032813
-S/20H00335 CPL PUBUDU KUMARA HM	0776949274
-S/20H00349 SGT ABEWICKRAMA HGM	0761182422
-S/20H00353 CPL CHAMILA RA	0769029527
-S/20H00369 L/CPL DINESH AS	0742260440
-S/20H00370 L/CPL SAMPATH ATL	0765342875
-S/20H00389 SGT PUSHPAKUMARA JMN	0711978341
-S/20H00395 L/CPL KHATALIYADDA KTGR	0762658684
-S/20H00428 L/CPL LALITH KUMARA JM	0779351756
-S/20H00432 L/CPL SOMASIRI TM	0770063162
-S/20H00449 PTE VIJAYALATH WPLG	0768905072
-S/20H00474 L/CPL DISSANAYAKA AAS	0775364615
-S/20H00496 L/CPL NANDA KUMARA NLA	0774642641
-S/20H00500 L/CPL GAMINI PUSHPA KUMARA WM	0776550254
-S/20H00519 PTE BANDARA KS	0740970703
-S/20H00526 L/CPL PATHTHINIGE PTNS	0715629149
-S/20H00527 PTE FANANDO GCD	0767085101
-S/20H00536 L/CPL JAYATHARANGA WH	0773520543
-S/20H00547 PTE WIJESEKARA YB	0758007974
-S/20H00548 CPL SARATH DMU	0770652368
-S/2H02978 PTE MAHADIULWEWA JPCM	0705607196
-S/3H02448 CPL EKANAYAKE EMPK	0764161523
-S/3H02521 CPL BANDARA JMURD	0770769813
-S/3H02583 CPL PIYARATHNA HBSK	0741916359
-S/522920 CPL SHALITHA KUMARA PL	0704010140
-S/529421 L/CPL DASANAYAKE DASD	0773238561
-S/529883 CPL Senarathna SHL	0769212542
-S/531078 L/CPL De Silva SE	0753160667
-S/531820 L/CPL Rathnajeewa LPDCD	0716143106
-S/533612 L/CPL KUMARA BMP	0716148773
-S/533639 L/CPL EKANAYAKA EMDB	0761073264
-S/533651 L/CPL ANURADA URN	0761388851
-S/534214 L/CPL DE SILVA KMML	0701162241
-S/534278 L/CPL SAHIN MAM	0762104117
-S/534279 PTE MINHAJ MM	0763899241
-S/535601 L/CPL DILSHAN KLTR	0750746834
-S/535924 L/CPL JAYATHILAKA AGSD	0771959883
-S/602885 WO II RANATHUNGA PRAWK	0711535545
-S/603074 SGT PIYARATHNA DGPS	0701399341
-S/606281 PTE Gunasekara RMMP	0767730458
-S/607553 PTE RODRIGO PSR	0774917624
-S/652696 L/CPL SISIRAKUMARA AA	0712261719
-S/653060 L/CPL MADAMPEGE MRS	0719492680
-S/777314 CPL SENARATH HWCK	0740386374
-S/780539 L/CPL WIJESIRI DGDWN	0762326294
-S/780940 PTE KAVIDU HWD	0766825632
-S/H100016 L/CPL KARUNARATHNE KPS	0774359049
-S/H100018 L/CPL SILWA APPD	0776539704
-S/H100019 L/CPL JAYARUWAN BGN	0741564526
-S/H100045 L/CPL KUMARATHUNGA PG	0711670272
-S/H100049 CPL UDAYAKUMARA HMS	0767438399
-S/H100050 L/CPL KUMARASINHA PN	0772125304
-S/H100052 CPL KUMARA IGSN	0771556920
-S/H100057 CPL LEWLIYADDA KMPDSM	0775083045
-S/H100059 L/CPL DISSANAYAKA RMWR	0710103197
-S/H100061 L/CPL KUMARA SAV	0714538213
-S/H100065 L/CPL EKANAYAKA EMCS	0743403486
-S/H100068 L/CPL GUNASEKARA RMTS	0702337296
-S/H100104 CPL JAYARATHNA NGS	0770719693
-S/H100144 L/CPL MENAKA PG	0711629253
-S/H100173 L/CPL NISANTHA G	0774641952
-S/H100185 L/CPL RATHNATHILAKE UP	0776988451
-S/H100219 L/CPL PRIYANTHA KLN	0769804428
-S/H100228 L/CPL ANURA OK	0770308399
-S/H100249 L/CPL BANDARA HMSK	0765359286
-S/H100264 L/CPL HERATH HMSB	0715967979
-S/H100267 L/CPL SANJEEWA GHGN	0741715414
-S/H100270 CPL GAJANAYAKA KMSG	0760299495
-S/H100280 L/CPL RANJITH BANDARA KM	0777655388
-S/H100285 L/CPL GUNATHILAKA UGCM	0701313819
-S/H100293 L/CPL HEWAGE DHMKL	0768473032
-S/H100294 L/CPL GUNASEAKARA HMWGBN	0768264351
-S/H100295 L/CPL NAMALKUMARA DMS	0776584279
-S/H100331 L/CPL JAYARATHNA HLSN	0768720170
-S/H100337 L/CPL INDIKA WACL	0777033564
-S/H100343 PTE THILAKARATHNA BANDARA TM	0769945724
-S/H100379 L/CPL PERERA PMLS	0767946696
-S/H100395 L/CPL ABESINGHE AMC	0766353610
-S/H100398 L/CPL JAYASOORIYA JMML	0711867927
-S/H100405 L/CPL BANDARA WMC	0766587931
-S/H100406 L/CPL LIYANAARACHCHI LAPT	0765791408
-S/H100415 L/CPL ABEYRATHNA KAN	0743258088
-S/H100429 CPL DISANAYAKA DMKM	0762994374
-S/H100461 PTE KUMARA MPWR	0767231786
-S/H100484 L/CPL Munidasa LMRSK	0714986380
-S/H100488 L/CPL Podirathna JAKP	0762270058
-S/H100574 WO II Asoka Ranjith SP	0707273551
-S/H100664 WO II Edirisingha EASB	0706315708
-S/H100675 SGT MAHINDA KUMARA WP	0777480283
-S/H100679 WO II Ganegoda DSC	0777113822
-S/H100692 CPL Premakumara DGS	0706067430
-S/H100694 CPL RANADEWA NPGIK	0775283918
-S/H100709 SGT JAYASINGHE JHMSK	0772479917
-S/H100721 L/CPL SUJEEWA KUMARA A	0741534121
-S/H100722 S/SGT Indra Kumara GS	0715168847
-S/H100725 CPL GUNATHILAKA KS	0762964136
-S/H100736 SGT Kulathunga KNK	0757586153
-S/H100738 CPL Weerakoon RLK	0760606184
-S/H100785 CPL CHATHURANGA PM	0718912379
-S/H100800 L/CPL PUSHPA KUMARA MAS	0706717943
-S/H100817 PTE GAMINI DM	0762778644
-S/H100819 L/CPL KARUNARATHNE KSP	0713734722
-S/H100822 L/CPL SENEVIRATHNE AMMGPNK	0766692974
-S/H100843 L/CPL Priyadarshana II	0779038317
-S/H100851 L/CPL JAYARATHNE WAU	0760879722
-S/H100854 PTE HERATH HMW	0776719343
-S/H100860 L/CPL DISANAYAKA DMC	0770168171
-S/H100861 L/CPL DISANAYAKA NS	0765583306
-S/H100862 L/CPL ABERATHNE ULDK	0716632153
-S/H100876 CPL WIJEWARDHANA MGM	0771486733
-S/H100879 CPL PRIYANTHA UAK	0775448712
-S/H100893 L/CPL JAYARATHNE WG	0765626219
-S/H100897 L/CPL BANDARA IMSS	0704566701
-S/H100898 L/CPL WICKRAMASINGHE AAKS	0769437086
-S/H100903 L/CPL JAYASUNDARA SSP	0704184434
-S/H100911 L/CPL JAYAWARDHANA TMA	0743593275
-S/H100928 L/CPL PADMASIRI JMN	0761559327
-S/H100936 PTE KUMARA JWS	0712983639
-S/H100946 CPL DHAMMIKA KUMARA PMASW	0774907887
-S/H100952 CPL BANDARA UGGJ	0752038012
-S/H100997 CPL PRADEEP KUMARA KKT	0779756987
-S/H101009 L/CPL PREMATHILAKA DM	0766809412
-S/H101013 L/CPL RATHNAYAKA RMLK	0761186671
-S/H101016 L/CPL JAYASEKARA JMCP	0778415769
-S/H101025 CPL SARATH KUMARA HD	0764749957
-S/H101028 L/CPL RUWAN KUMARA KKD	0771918002
-S/H101030 CPL CHAMARA SDS	0714652747
-S/H101031 L/CPL BANDARA SLN	0710868759
-S/H101036 L/CPL NANDASENA SSK	0774039638
-S/H101038 L/CPL PRABATH NT	0764195707
-S/H101041 L/CPL WEERASINGHE ADBSS	0776339227
-S/H101055 L/CPL RAJAPAKSHA ASKJ	0762292094
-S/H101080 L/CPL GUNATHILAKA BLCM	0762981296
-S/H101097 L/CPL MADURANGA HLN	0773551719
-S/H101103 L/CPL DINESH SK	0774651408
-S/H101192 CPL WEJERATHNA WM	0760696336
-S/H101203 L/CPL KUMARA DRWMCBN	0743862165
-S/H101215 L/CPL GAJASINGHA GMIB	0750948392
-S/H101241 L/CPL DHRAMASIRI KGBL	0764825462
-S/H101258 L/CPL PRIYANKARA HAASP	0768874063
-S/H101314 CPL Pushpa kumara AGA	0760675960
-S/H101318 PTE Buddadasa BT	0763971477
-S/H101333 PTE Pushpa kumara THS	0701485599
-S/H101334 L/CPL Tharanga THS	0771778739
-S/H101337 L/CPL Bandusena KPMG	0741542880
-S/H101364 L/CPL Wijebandara HMTD	0741864671
-S/H101378 PTE Adikari AMCP	0772385108
-S/H101398 L/CPL Padmasiri EDU	0779807252
-S/H101419 PTE Priyadarshana KLS	0716881048
-S/H101430 L/CPL Deshapriya HMAK	0767409863
-S/H101446 L/CPL ABEYKOON AMRS	0760707638
-S/H101458 L/CPL AJITHKUMARA DM	0766256959
-S/H101465 L/CPL ATHAPATHTHU AKMMM	0768469219
-S/H101466 L/CPL SENARATHNE NMMK	0766197240
-S/H101478 L/CPL DISSANAYAKA DMWD	0767973096
-S/H101495 L/CPL Viduranga Karunarathna R	0706143009
-S/H101538 L/CPL EKANAYAKA WMSK	0772850025
-S/H101550 L/CPL JAYASINGHA KGMS	0742281816
-S/H101585 L/CPL Samarasingha WAPSJ	0705920697
-S/H101640 L/CPL Basnayaka BMPM	0704248995
-S/H101650 L/CPL JAYARATHNA KMHD	0716356794
-S/H101661 L/CPL Manjula RM	0764225058
-S/H101775 L/CPL Subasingha SMM	0742947756
-S/H101776 L/CPL Nimalsiri MM	0760127250
-S/H101781 PTE Gunasena AM	0761803072
-S/H101788 L/CPL Kumarasingha BGHM	0703803765
-S/H101811 L/CPL Dasanayaka DMSM	0760563507
-S/H101836 L/CPL Bandara HMWD	0703301404
-S/H101840 L/CPL Dilanjude JA	0767515008
-S/H101854 L/CPL SENARATHNE RBSP	0773363669
-S/H101865 L/CPL Muthubanda RM	0702256358
-S/H101893 L/CPL Wickramasingha HGN	0718995973
-S/H101903 PTE Chandrasiri RHAMN	0702800154
-S/H101905 PTE MADUWANTHA WD	0761289498
-S/H101906 PTE Fernando SBTP	0762440483
-S/H101978 PTE Jayathilaka RMMTD	0760878218
-S/H101989 PTE Laksman Peiris LPAP	0772139754
-S/H101991 PTE THILAKARATHNA EMNG	0718827886
-S/H101995 PTE Jayalal LBR	0704977278
-S/H101998 PTE Abeysingha AMSK	0740558135
-S/H102005 PTE Weerakoon WTD	0702089522
-S/H102010 PTE DE SILVA HAPM	0716148284
-S/H102012 PTE Bulathsinghala BSDM	0715828807
-S/H102023 PTE Bandara AMGJ	0769691552
-S/H102024 PTE Wickramasingha HM	0742169877
-S/H102030 PTE Madusanka LMD	0761186605
-S/H102033 PTE Rathnayaka YGV	0702655665
-S/H102042 PTE Wimalasooriya HM	0765339161
-S/H102043 PTE Bandara AMSM	0765563198
-S/H102061 PTE Rasnayaka RMJH	0768501575
-S/H102066 PTE De Silva LHLD	0704247621
-S/H102068 PTE Premathilaka PDSM	0705262990
-S/H102098 PTE Pushpa Kumara AGP	0775429590
-S/H102101 PTE Chathuranga Herath KHMSS	0764095129
-S/H102114 PTE Warawaththa WGKPK	0715664338
-S/H102128 PTE Jayathissa JLSK	0712359967
-S/H102143 PTE Wickramasinghe WSM	0770112907
-S/H102158 PTE Sandaruwan KV	0779645601
-S/H102217 PTE Dilshan SDA	0764012245
-S/H102219 L/CPL Wijesooriya GRDL	0776816035
-S/H102221 PTE Chandrasena SD	0765263895
-S/H102231 PTE Siriwardhana DMMS	0717320282
-S/H102250 PTE De Silva SAPK	0717438338
-S/H102276 PTE Wijerathna TN	0702177783
-S/H102299 PTE Nipun Shakthi KM	0710841019
-S/H102309 PTE Gunarathna LGPP	0716423705
-S/H102310 PTE Wanasingha WMSK	0701026482
-S/H102331 CPL KAHANDAWA KASMK	0710553267
-S/H102336 SGT Gunasekara MMGA	0778014623
-S/H102340 CPL RANJITH KUMARA MUML	0705506861
-S/H102341 CPL PUSPAKUMARA KDC	0762102968
-S/H102342 L/CPL CHANDRAKUMARA HVM	0718645406
-S/H102343 L/CPL LAKMAL HMS	0701491353
-S/H102345 L/CPL THUSHARA L	0741148467
-S/H102357 PTE Sandaruwan TMC	0773692485
-S/H102361 PTE Sachinthaka RDR	0773163746
-S/H102390 PTE Kumara IGLP	0712676178
-S/H102399 PTE Sarath Kumara KMKG	0779320376
-S/H102406 PTE Kumara DMAN	0768797203
-S/H102430 PTE Chandrapala DN	0761254359
-S/H102435 PTE Fernando DHAM	0773492693
-S/H102438 PTE Dissanayaka JPK	0762288279
-S/H102455 PTE Silwa JSN	0710851283
-S/H102469 PTE Jayalath DM	0716143326
-S/H102510 PTE Kekulandara KMPKGAP	0761293639
-S/H102512 PTE Thushara SVK	0768879073
-S/H102529 PTE Kumara KP	0705332016
-S/H102532 PTE Bandara GGS	0760949961
-S/H102554 PTE Sandaruwan KW	0743362917
-S/H102556 PTE Chathuranga WHGH	0762631113
-S/H102576 PTE Bandara WMKI	0711281994
-S/H102581 L/CPL WIJESINGHE WS	0774961566
-S/H102592 CPL BANDARA RAAR	0778854428
-S/H102621 PTE PATHIRANA RMRN	0703003285
-S/H102623 PTE BANDARA WMD	0740402998
-S/H102656 PTE KODIKARA KGHP	0772589644
-S/H102676 PTE KUMARA HPDN	0767194590
-S/H102689 PTE WEJERATHNA KWNS	0770523111
-S/H102706 CPL Ranasingha B	0778293924
-S/H102707 L/CPL KUMARA KCS	0718901983
-S/H102714 CPL Jothipala GDGM	0771582407
-S/H102722 PTE MADHUSANKA RRP	0702940687
-S/H102723 PTE KUMARA HMNA	0772189216
-S/H102724 PTE RATHNAYAKA MMMA	0768408109
-S/H102772 PTE WEERASINGHE RDDK	0776226437
-S/H102776 PTE DHARMAKUMARA PMAP	0771173558
-S/H102785 PTE ABESINGHA AMTL	0762315066
-S/H102849 PTE PANANWALA PGASDL	0761028451
-S/H102882 PTE SAMATHUN SMWGHD	0760086726
-S/H102887 PTE PREMACHANDRA LHGHD	0763144638
-S/H102893 PTE GODAGANDENIYA GDPHL	0764678089
-S/H102897 PTE DARMASIRI RMS	0762358924
-S/H102902 L/CPL HERATH NHMKJB	0741183290
-S/H102950 PTE MADUSHANKA AGSL	0705243748
-S/H102953 PTE KUMARA KNUBS	0783738448
-S/H102955 PTE BANDARA KMMS	0760608796
-S/H102956 PTE MALDANEYA MGND	0701513243
-S/H102961 L/CPL MALDENIYA MGCM	0702290282
-S/H102996 PTE GAMINI GUS	0761727126
-S/H103069 PTE DISANAYAKE DMLK	0773485536
-S/H103073 PTE RAJAPAKSHA RPSUS	0775036395
-S/H103075 PTE SENEVIRATNA AMID	0779389320
-S/H103080 PTE KASTHURI TPGM	0770623856
-S/H103081 PTE THARAKA WAAS	0769830276
-S/H103085 PTE GAMAGE KGPLS	0701513059
-S/H103235 PTE THENNAKOON HMSM	0714991553
-S/H103247 PTE KUMARA WMS	0779188728
-S/H103276 PTE SANKALPA JPVU	0781464589
-S/H103279 PTE KULATHUNGA KMSB	0753784141
-S/H103284 PTE ILEPERUMA IAB	0741663603
-S/H103321 PTE BANDARA SABBPI	0769235335
-S/H103322 PTE MADUSHANKA HCC	0774827392
-S/H103343 PTE SENADEERA HPDID	0769044891
-S/H103350 PTE SURAWEERA SGLC	0704938155
-S/H103382 PTE SAMRASINGHA DRS	0763365382
-S/H103417 PTE ABEYSINGHA AHMDL	0717048560
-S/H103422 L/CPL GUNAWARDHANA KAL	0718929950
-S/H103425 PTE SAMPATH DI	0781371316
-S/H103446 PTE SANDARUWAN RLT	0715786248
-S/H103457 PTE SANDARUWAN KAGSL	0713687050
-S/H103492 PTE WIJESOORIYA GCS	0718769643
-S/H103493 PTE MADURANGA KMG	0775237897
-S/H103494 PTE PUSHPAKUMARA KD	0718722336
-S/H103496 PTE MADUSHANKA RMT	0778302747
-S/H103505 PTE KUMARATHUNGA RDNP	0704140005
-S/H103507 PTE UPATHISSA GUMN	0774034603
-S/H103521 PTE PRIYASHANTHA UDD	0763876531
-S/H103533 PTE NAWARTHENA HMRD	0762202079
-S/H103595 PTE HETTIGAMAGE MPK	0768282301
-S/H103606 PTE DISANAYAKA DMRM	0778947328
-S/H103607 PTE RANDENIYA RAJS	0742770260
-S/H103608 PTE JAYATHISSA RMPM	0765851697
-S/H103609 PTE KUMARA JMLS	0757741002
-S/H103614 PTE WICKRAMASINGHA TBSRS 0760567204
-S/H103616 PTE WICKRAMASINGHA TBULS 0743548663
-S/H103621 PTE KUMARA AMDS	0762552807
-S/H103623 PTE BANDARA KDSK	0727915168
+    // Display results in dropdown
+    function displayResults(results, searchTerm) {
+        if (results.length === 0) {
+            resultsDropdown.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-user-slash"></i>
+                    <p>No personnel found for "${searchTerm}"</p>
+                </div>
             `;
-            
-            const lines = fullData.trim().split('\n');
-            
-            lines.forEach(line => {
-                const parts = line.split('\t');
-                if (parts.length >= 2) {
-                    const firstPart = parts[0].trim();
-                    const phone = parts[1].trim();
-                    
-                    // Parse service number and rank/name
-                    const serviceMatch = firstPart.match(/^([A-Z]\/\d+[A-Z]?\d*)\s+(.+)$/);
-                    
-                    if (serviceMatch) {
-                        const serviceNo = serviceMatch[1];
-                        const rest = serviceMatch[2];
-                        
-                        // Try to extract rank
-                        const rankMatch = rest.match(/^([A-Za-z0-9()\/\.]+)\s+(.+)$/);
-                        
-                        if (rankMatch) {
-                            const rank = rankMatch[1];
-                            const name = rankMatch[2];
-                            personnelData.push({ serviceNo, rank, name, phone });
-                        } else {
-                            // If no clear rank, assume the whole thing is name
-                            personnelData.push({ serviceNo, rank: '', name: rest, phone });
-                        }
-                    }
-                }
-            });
-            
-            updateDataCount();
+            resultsDropdown.classList.add('active');
+            return;
         }
-
-        // Import JSON Data
-        importBtn.addEventListener('click', function() {
-            fileUploadModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+        
+        let resultsHTML = '';
+        
+        results.forEach((person, index) => {
+            const highlightedName = highlightText(`${person.rank} ${person.name}`, searchTerm);
+            const highlightedService = highlightText(person.serviceNo, searchTerm);
+            const highlightedPhone = highlightText(person.phone, searchTerm);
+            
+            resultsHTML += `
+                <div class="result-item" data-index="${index}">
+                    <div class="result-info">
+                        <div class="result-name">${highlightedName}</div>
+                        <div class="result-details">
+                            <span class="result-service">${highlightedService}</span>
+                            <span class="result-phone">${highlightedPhone}</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right result-arrow"></i>
+                </div>
+            `;
         });
-
-        // Browse file button
-        browseFileBtn.addEventListener('click', function() {
-            fileInput.click();
+        
+        resultsDropdown.innerHTML = resultsHTML;
+        resultsDropdown.classList.add('active');
+        
+        // Add click events to results
+        document.querySelectorAll('.result-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                selectedPerson = results[index];
+                showDetailPopup(selectedPerson);
+            });
         });
+    }
 
-        // File input change
-        fileInput.addEventListener('change', function(e) {
-            if (e.target.files.length > 0) {
-                selectedFile = e.target.files[0];
-                fileDropArea.innerHTML = `
-                    <i class="fas fa-file-alt"></i>
-                    <p>Selected file: <strong>${selectedFile.name}</strong></p>
-                    <p>Size: ${(selectedFile.size / 1024).toFixed(2)} KB</p>
-                `;
-                uploadFileBtn.disabled = false;
+    // Highlight matching text
+    function highlightText(text, searchTerm) {
+        if (!searchTerm) return text;
+        
+        const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
+        return text.replace(regex, '<span style="color: var(--primary-green); font-weight: 700;">$1</span>');
+    }
+
+    // Escape regex characters
+    function escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // Hide results dropdown
+    function hideResults() {
+        resultsDropdown.classList.remove('active');
+    }
+
+    // Show detail popup
+    function showDetailPopup(person) {
+        console.log('Showing popup for:', person.name);
+        
+        popupRank.textContent = person.rank;
+        popupName.textContent = person.name;
+        popupService.textContent = person.serviceNo;
+        popupServiceDetail.textContent = person.serviceNo;
+        popupPhone.textContent = person.phone;
+        
+        // Store phone number in call button
+        callBtn.setAttribute('data-phone', person.phone);
+        callBtn.innerHTML = `<i class="fas fa-phone"></i> Call ${person.phone}`;
+        
+        // Show popup with animation
+        detailPopupOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Hide search results
+        hideResults();
+    }
+
+    // CLOSE POPUP FUNCTIONS - FIXED VERSION
+    function closeDetailPopup() {
+        console.log('Closing popup');
+        detailPopupOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Set up event listeners for closing popup
+    function setupPopupCloseListeners() {
+        console.log('Setting up popup close listeners');
+        
+        // 1. Close button (X)
+        if (closePopupBtn) {
+            console.log('Found close button');
+            closePopupBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeDetailPopup();
+            });
+        }
+        
+        // 2. Click outside the popup (on overlay)
+        detailPopupOverlay.addEventListener('click', function(e) {
+            // Only close if clicking directly on the overlay (not on the popup content)
+            if (e.target === this) {
+                closeDetailPopup();
             }
         });
-
-        // File drag and drop
-        fileDropArea.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--accent-green)';
-            this.style.background = 'var(--light-green)';
-        });
-
-        fileDropArea.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--secondary-green)';
-            this.style.background = 'transparent';
-        });
-
-        fileDropArea.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--secondary-green)';
-            this.style.background = 'transparent';
-            
-            if (e.dataTransfer.files.length > 0) {
-                selectedFile = e.dataTransfer.files[0];
-                if (selectedFile.type === 'application/json' || selectedFile.name.endsWith('.json')) {
-                    fileDropArea.innerHTML = `
-                        <i class="fas fa-file-alt"></i>
-                        <p>Selected file: <strong>${selectedFile.name}</strong></p>
-                        <p>Size: ${(selectedFile.size / 1024).toFixed(2)} KB</p>
-                    `;
-                    uploadFileBtn.disabled = false;
-                } else {
-                    alert('Please select a JSON file only.');
-                }
+        
+        // 3. Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && detailPopupOverlay.classList.contains('active')) {
+                closeDetailPopup();
             }
         });
+    }
 
-        // Upload file
-        uploadFileBtn.addEventListener('click', function() {
-            if (!selectedFile) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const jsonData = JSON.parse(e.target.result);
-                    
-                    // Validate JSON structure
-                    if (Array.isArray(jsonData)) {
-                        if (jsonData.length > 0 && jsonData[0].serviceNo && jsonData[0].name && jsonData[0].phone) {
-                            personnelData = jsonData;
-                            updateDataCount();
-                            hideResults();
-                            searchInput.value = '';
-                            currentSearchTerm = '';
-                            
-                            alert(`Successfully imported ${jsonData.length} personnel records.`);
-                            fileUploadModal.classList.remove('active');
-                            document.body.style.overflow = 'auto';
-                            selectedFile = null;
-                        } else {
-                            alert('Invalid JSON format. Expected array of objects with serviceNo, rank, name, phone fields.');
-                        }
-                    } else {
-                        alert('Invalid JSON format. Expected an array.');
-                    }
-                } catch (error) {
-                    alert('Error reading JSON file: ' + error.message);
-                }
-            };
-            reader.readAsText(selectedFile);
-        });
+    // Call button functionality
+    callBtn.addEventListener('click', function() {
+        const phoneNumber = this.getAttribute('data-phone');
+        if (phoneNumber) {
+            // In a real app, this would initiate a phone call
+            alert(`Calling ${phoneNumber}...\n\nIn a real application, this would initiate a phone call to the selected personnel.`);
+        }
+    });
 
-        // Cancel upload
-        cancelUploadBtn.addEventListener('click', function() {
-            fileUploadModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            selectedFile = null;
-        });
-
-        // Export JSON Data
-        exportBtn.addEventListener('click', function() {
-            const dataStr = JSON.stringify(personnelData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = 'military_personnel_data.json';
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-            
-            alert(`Exported ${personnelData.length} personnel records to JSON file.`);
-        });
-
-        // Clear Data Button
-        clearDataBtn.addEventListener('click', function() {
-            pinModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            pinInput.value = '';
-            pinError.classList.remove('show');
-        });
-
-        // PIN Verification
-        confirmPin.addEventListener('click', function() {
-            if (pinInput.value === SECURITY_PIN) {
-                personnelData = [];
-                updateDataCount();
-                hideResults();
-                searchInput.value = '';
-                currentSearchTerm = '';
-                
-                pinModal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-                
-                alert('All data has been cleared successfully.');
-            } else {
-                pinError.classList.add('show');
-                pinInput.value = '';
-                pinInput.focus();
+    // Update search when checkboxes change
+    [searchName, searchServiceNo, searchPhone].forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (currentSearchTerm) {
+                performSearch(currentSearchTerm);
             }
         });
+    });
 
-        // Cancel PIN verification
-        cancelPin.addEventListener('click', function() {
+    // Export JSON Data
+    exportBtn.addEventListener('click', function() {
+        const dataStr = JSON.stringify(personnelData, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = 'military_personnel_data.json';
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+        
+        alert(`Exported ${personnelData.length} personnel records to JSON file.`);
+    });
+
+    // Clear Data Button
+    clearDataBtn.addEventListener('click', function() {
+        pinModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        pinInput.value = '';
+        pinError.classList.remove('show');
+        pinInput.focus();
+    });
+
+    // PIN Verification
+    confirmPin.addEventListener('click', function() {
+        if (pinInput.value === SECURITY_PIN) {
+            personnelData = [];
+            updateDataCount();
+            hideResults();
+            searchInput.value = '';
+            currentSearchTerm = '';
+            
             pinModal.classList.remove('active');
             document.body.style.overflow = 'auto';
-        });
-
-        // Close PIN modal on outside click
-        pinModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                pinModal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        });
-
-        // Initialize data count
-        updateDataCount();
-
-        // Keyboard navigation for search
-        searchInput.addEventListener('keydown', function(e) {
-            const results = document.querySelectorAll('.result-item');
             
-            if (results.length === 0) return;
-            
-            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-                e.preventDefault();
-                
-                const currentActive = document.querySelector('.result-item.active');
-                let nextActive;
-                
-                if (e.key === 'ArrowDown') {
-                    nextActive = currentActive ? currentActive.nextElementSibling : results[0];
-                } else {
-                    nextActive = currentActive ? currentActive.previousElementSibling : results[results.length - 1];
-                }
-                
-                // Remove active class from all
-                results.forEach(r => r.classList.remove('active'));
-                
-                // Add to selected
-                if (nextActive) {
-                    nextActive.classList.add('active');
-                    nextActive.scrollIntoView({ block: 'nearest' });
-                }
-            } else if (e.key === 'Enter') {
-                const activeResult = document.querySelector('.result-item.active');
-                if (activeResult) {
-                    activeResult.click();
-                }
-            } else if (e.key === 'Escape') {
-                hideResults();
-            }
-        });
+            alert('All data has been cleared successfully.');
+        } else {
+            pinError.classList.add('show');
+            pinInput.value = '';
+            pinInput.focus();
+        }
+    });
 
-        // Close results when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !resultsDropdown.contains(e.target)) {
-                hideResults();
+    // Cancel PIN verification
+    cancelPin.addEventListener('click', function() {
+        pinModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    });
+
+    // Close PIN modal on outside click
+    pinModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            pinModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Handle Enter key in PIN input
+    pinInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            confirmPin.click();
+        }
+    });
+
+    // Initialize data count
+    updateDataCount();
+
+    // Keyboard navigation for search
+    searchInput.addEventListener('keydown', function(e) {
+        const results = document.querySelectorAll('.result-item');
+        
+        if (results.length === 0) return;
+        
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            
+            const currentActive = document.querySelector('.result-item.active');
+            let nextActive;
+            
+            if (e.key === 'ArrowDown') {
+                nextActive = currentActive ? currentActive.nextElementSibling : results[0];
+            } else {
+                nextActive = currentActive ? currentActive.previousElementSibling : results[results.length - 1];
             }
-        });
-    </script>
-</body>
-</html>
+            
+            // Remove active class from all
+            results.forEach(r => r.classList.remove('active'));
+            
+            // Add to selected
+            if (nextActive) {
+                nextActive.classList.add('active');
+                nextActive.scrollIntoView({ block: 'nearest' });
+            }
+        } else if (e.key === 'Enter') {
+            const activeResult = document.querySelector('.result-item.active');
+            if (activeResult) {
+                activeResult.click();
+            }
+        } else if (e.key === 'Escape') {
+            hideResults();
+        }
+    });
+
+    // Close results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !resultsDropdown.contains(e.target)) {
+            hideResults();
+        }
+    });
+
+    // Focus search input on page load
+    window.addEventListener('load', function() {
+        searchInput.focus();
+        setupPopupCloseListeners();
+    });
+</script>
+
+
+
+
+
+
+</body> </html>

@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Military Personnel Directory - Professional System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --primary-green: #006838;
+            --secondary-green: #2E8B57;
+            --accent-green: #4CAF50;
+            --light-green: #E8F5E9;
+            --dark-green: #004d29;
+            --gradient-start: #006838;
+            --gradient-end: #004d29;
+            --text-dark: #1a1a1a;
+            --text-light: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --shadow: 0 10px 30px rgba(0, 104, 56, 0.15);
+            --shadow-hover: 0 15px 40px rgba(0, 104, 56, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --danger-red: #dc3545;
+            --warning-orange: #ff9800;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .background-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(45deg, var(--accent-green), var(--secondary-green));
+            opacity: 0.1;
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -80px;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 40%;
+            right: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, 40px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 80px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-20px, 40px) rotate(270deg);
+            }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-top: 30px;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 20px rgba(0, 104, 56, 0.2);
+            animation: pulse 2s infinite alternate;
+        }
+
+        .logo-icon {
+            color: white;
+            font-size: 2.2rem;
+        }
+
+        h1 {
+            color: var(--primary-green);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--secondary-green);
+            font-size: 1.1rem;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .data-info {
+            background: var(--light-green);
+            padding: 12px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            font-weight: 500;
+            color: var(--dark-green);
+            box-shadow: 0 4px 6px rgba(0, 104, 56, 0.1);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border: 2px solid var(--secondary-green);
+            color: var(--primary-green);
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 104, 56, 0.1);
+        }
+
+        .control-btn:hover {
+            background: var(--light-green);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 104, 56, 0.2);
+        }
+
+        .control-btn.danger {
+            border-color: var(--danger-red);
+            color: var(--danger-red);
+        }
+
+        .control-btn.danger:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.8s ease-out 0.3s both;
+            transition: var(--transition);
+        }
+
+        .search-section:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-icon-main {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 15px rgba(0, 104, 56, 0.2);
+        }
+
+        h2 {
+            color: var(--primary-green);
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        /* Search Box */
+        .search-box-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 18px 25px;
+            padding-left: 60px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: white;
+            color: var(--text-dark);
+            transition: var(--transition);
+            outline: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .search-box-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-green);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .search-box:focus + .search-box-icon {
+            color: var(--primary-green);
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #b0b0b0;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 5px;
+            display: none;
+        }
+
+        .clear-btn:hover {
+            color: var(--primary-green);
+        }
+
+        /* Search Options */
+        .search-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+            background: #f8f9fa;
+        }
+
+        .option-item:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-green);
+            cursor: pointer;
+        }
+
+        .option-label {
+            color: var(--text-dark);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Results Dropdown */
+        .results-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .results-dropdown.active {
+            display: block;
+        }
+
+        .result-item {
+            padding: 16px 25px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item:hover {
+            background: var(--light-green);
+            transform: translateX(5px);
+        }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-name {
+            color: var(--primary-green);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .result-details {
+            display: flex;
+            gap: 20px;
+            color: var(--secondary-green);
+            font-size: 0.95rem;
+        }
+
+        .result-service {
+            font-weight: 500;
+        }
+
+        .result-phone {
+            direction: ltr;
+        }
+
+        .result-arrow {
+            color: var(--accent-green);
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: var(--transition);
+            transform: translateX(-10px);
+        }
+
+        .result-item:hover .result-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .no-results {
+            padding: 30px;
+            text-align: center;
+            color: var(--secondary-green);
+        }
+
+        .no-results i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Detail Popup */
+        .detail-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .detail-popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .detail-popup {
+            background: var(--card-bg);
+            border-radius: 25px;
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: var(--transition);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .detail-popup-overlay.active .detail-popup {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .popup-header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 30px;
+            color: white;
+            position: relative;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .popup-rank {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .popup-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .popup-service {
+            background: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+        }
+
+        .popup-content {
+            padding: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .info-icon {
+            background: var(--light-green);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            font-size: 1.3rem;
+        }
+
+        .info-details h4 {
+            color: var(--primary-green);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .info-details p {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .phone-number {
+            color: var(--primary-green);
+            font-size: 1.4rem;
+            font-weight: 700;
+            direction: ltr;
+        }
+
+        .call-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0, 104, 56, 0.2);
+        }
+
+        .call-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 104, 56, 0.3);
+        }
+
+        /* PIN Modal */
+        .pin-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .pin-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .pin-modal {
+            background: var(--card-bg);
+            border-radius: 25px;
+            width: 90%;
+            max-width: 400px;
+            padding: 40px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: var(--transition);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .pin-modal-overlay.active .pin-modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .pin-header {
+            color: var(--primary-green);
+            margin-bottom: 25px;
+        }
+
+        .pin-header i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--danger-red);
+        }
+
+        .pin-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .pin-input:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .pin-error {
+            color: var(--danger-red);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            min-height: 20px;
+            visibility: hidden;
+        }
+
+        .pin-error.show {
+            visibility: visible;
+        }
+
+        .pin-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .pin-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .pin-confirm {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+
+        .pin-cancel {
+            background: #f0f0f0;
+            color: var(--text-dark);
+        }
+
+        .pin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* File Upload */
+        .file-upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .file-upload-modal.active {
+            display: flex;
+        }
+
+        .file-upload-box {
+            background: var(--card-bg);
+            border-radius: 25px;
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .upload-header {
+            color: var(--primary-green);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .upload-header i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .file-drop-area {
+            border: 2px dashed var(--secondary-green);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .file-drop-area:hover {
+            border-color: var(--accent-green);
+            background: var(--light-green);
+        }
+
+        .file-drop-area i {
+            font-size: 3rem;
+            color: var(--secondary-green);
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            color: var(--secondary-green);
+            font-size: 0.9rem;
+        }
+
+        .upload-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--secondary-green);
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .footer-text {
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .footer-link {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .footer-link:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 10px 20px rgba(0, 104, 56, 0.2);
+            }
+            100% {
+                box-shadow: 0 10px 30px rgba(0, 104, 56, 0.4);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding-top: 20px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .search-section {
+                padding: 25px;
+            }
+
+            .search-options {
+                gap: 15px;
+            }
+
+            .option-item {
+                padding: 6px 12px;
+            }
+
+            .detail-popup {
+                width: 95%;
+            }
+
+            .popup-name {
+                font-size: 1.7rem;
+            }
+
+            .control-panel {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .search-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .result-details {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .pin-modal, .file-upload-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <i class="fas fa-user-shield logo-icon"></i>
+            </div>
+            <h1>Military Personnel Directory</h1>
+            <p class="subtitle">Secure search system for military personnel by name, service number, or phone</p>
+            <div class="data-info">
+                <i class="fas fa-database"></i> Currently loaded: <span id="dataCount">0</span> personnel records
+            </div>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <button class="control-btn" id="importBtn">
+                <i class="fas fa-file-import"></i> Import JSON Data
+            </button>
+            <button class="control-btn" id="exportBtn">
+                <i class="fas fa-file-export"></i> Export as JSON
+            </button>
+            <button class="control-btn danger" id="clearDataBtn">
+                <i class="fas fa-trash-alt"></i> Clear All Data
+            </button>
+        </div>
+
+        <main>
+            <div class="search-section">
+                <div class="search-header">
+                    <div class="search-icon-main">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h2>Search Personnel</h2>
+                </div>
+
+                <div class="search-box-wrapper">
+                    <input type="text" class="search-box" id="searchInput" placeholder="Type to search...">
+                    <i class="fas fa-search search-box-icon"></i>
+                    <button class="clear-btn" id="clearBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <div class="results-dropdown" id="resultsDropdown">
+                        <!-- Results will appear here -->
+                    </div>
+                </div>
+
+                <div class="search-options">
+                    <div class="option-item">
+                        <input type="checkbox" class="option-checkbox" id="searchName" checked>
+                        <label for="searchName" class="option-label">Search by Name</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" class="option-checkbox" id="searchServiceNo" checked>
+                        <label for="searchServiceNo" class="option-label">Search by Service No</label>
+                    </div>
+                    <div class="option-item">
+                        <input type="checkbox" class="option-checkbox" id="searchPhone" checked>
+                        <label for="searchPhone" class="option-label">Search by Phone</label>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p class="footer-text">Military Personnel Directory &copy; 2023 | Secure Access Only | PIN: 8712</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link"><i class="fas fa-shield-alt"></i> Security</a>
+                <a href="#" class="footer-link"><i class="fas fa-question-circle"></i> Help</a>
+                <a href="#" class="footer-link"><i class="fas fa-cog"></i> Settings</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Detail Popup -->
+    <div class="detail-popup-overlay" id="detailPopup">
+        <div class="detail-popup">
+            <div class="popup-header">
+                <button class="popup-close" id="closePopup">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="popup-rank" id="popupRank"></div>
+                <h2 class="popup-name" id="popupName"></h2>
+                <div class="popup-service" id="popupService"></div>
+            </div>
+            <div class="popup-content">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                    <div class="info-details">
+                        <h4>SERVICE NUMBER</h4>
+                        <p id="popupServiceDetail"></p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="info-details">
+                        <h4>CONTACT NUMBER</h4>
+                        <p class="phone-number" id="popupPhone"></p>
+                        <button class="call-btn" id="callBtn">
+                            <i class="fas fa-phone"></i> Call Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Verification Modal -->
+    <div class="pin-modal-overlay" id="pinModal">
+        <div class="pin-modal">
+            <div class="pin-header">
+                <i class="fas fa-lock"></i>
+                <h3>Security Verification Required</h3>
+                <p>Enter PIN to clear all data</p>
+            </div>
+            <input type="password" class="pin-input" id="pinInput" placeholder="****" maxlength="4" inputmode="numeric">
+            <div class="pin-error" id="pinError">Incorrect PIN. Try again.</div>
+            <div class="pin-buttons">
+                <button class="pin-btn pin-confirm" id="confirmPin">Confirm</button>
+                <button class="pin-btn pin-cancel" id="cancelPin">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Upload Modal -->
+    <div class="file-upload-modal" id="fileUploadModal">
+        <div class="file-upload-box">
+            <div class="upload-header">
+                <i class="fas fa-file-import"></i>
+                <h3>Import Personnel Data</h3>
+                <p>Upload a JSON file with personnel data</p>
+            </div>
+            <div class="file-drop-area" id="fileDropArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag & drop your JSON file here</p>
+                <p>or</p>
+                <button class="control-btn" id="browseFileBtn">
+                    <i class="fas fa-folder-open"></i> Browse Files
+                </button>
+                <input type="file" class="file-input" id="fileInput" accept=".json">
+                <div class="file-info">
+                    <p>Format: JSON array with serviceNo, rank, name, phone fields</p>
+                </div>
+            </div>
+            <div class="upload-buttons">
+                <button class="control-btn" id="uploadFileBtn" disabled>
+                    <i class="fas fa-upload"></i> Upload & Import
+                </button>
+                <button class="control-btn pin-cancel" id="cancelUploadBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Security PIN - Change this to your desired PIN
+        const SECURITY_PIN = "8712";
+        
+        // Initialize with sample data
+        let personnelData = [
+            { serviceNo: "O/10691", rank: "Captain", name: "UST Dunuthilaka", phone: "0706575844" },
+            { serviceNo: "O/10802", rank: "Captain", name: "K S C Karunarathna", phone: "0778216616" },
+            { serviceNo: "O/11526", rank: "Lt", name: "RPKS Rajapaksha", phone: "0762287484" },
+            { serviceNo: "O/11576", rank: "Captain(QM)", name: "KMD Sisira kumara", phone: "0711204364" },
+            { serviceNo: "O/11705", rank: "2/Lt", name: "RM JANAKA", phone: "0771513795" },
+            { serviceNo: "O/11743", rank: "2/Lt", name: "GBS Madhushan", phone: "0768584319" },
+            { serviceNo: "O/6147", rank: "Major", name: "SH Sudusinghe", phone: "0773306405" },
+            { serviceNo: "O/71526", rank: "Captain", name: "MN Madhushanka", phone: "0702000502" },
+            { serviceNo: "O/8573", rank: "Major", name: "BHDS KARUNARATHNA", phone: "0773646374" },
+            { serviceNo: "O/8702", rank: "Major", name: "RMTS ALAHAKOON", phone: "0762456346" },
+            { serviceNo: "O/8970", rank: "Major", name: "GCO Siriwaradana", phone: "0710133727" }
+        ];
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultsDropdown = document.getElementById('resultsDropdown');
+        const detailPopup = document.getElementById('detailPopup');
+        const closePopup = document.getElementById('closePopup');
+        const callBtn = document.getElementById('callBtn');
+        const dataCount = document.getElementById('dataCount');
+        const importBtn = document.getElementById('importBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const clearDataBtn = document.getElementById('clearDataBtn');
+        const pinModal = document.getElementById('pinModal');
+        const pinInput = document.getElementById('pinInput');
+        const pinError = document.getElementById('pinError');
+        const confirmPin = document.getElementById('confirmPin');
+        const cancelPin = document.getElementById('cancelPin');
+        const fileUploadModal = document.getElementById('fileUploadModal');
+        const fileDropArea = document.getElementById('fileDropArea');
+        const fileInput = document.getElementById('fileInput');
+        const browseFileBtn = document.getElementById('browseFileBtn');
+        const uploadFileBtn = document.getElementById('uploadFileBtn');
+        const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+
+        // Search options
+        const searchName = document.getElementById('searchName');
+        const searchServiceNo = document.getElementById('searchServiceNo');
+        const searchPhone = document.getElementById('searchPhone');
+
+        // Popup elements
+        const popupRank = document.getElementById('popupRank');
+        const popupName = document.getElementById('popupName');
+        const popupService = document.getElementById('popupService');
+        const popupServiceDetail = document.getElementById('popupServiceDetail');
+        const popupPhone = document.getElementById('popupPhone');
+
+        // Initialize
+        let currentSearchTerm = '';
+        let selectedPerson = null;
+        let selectedFile = null;
+
+        // Update data count
+        function updateDataCount() {
+            dataCount.textContent = personnelData.length;
+        }
+
+        // Show/hide clear button
+        searchInput.addEventListener('input', function() {
+            currentSearchTerm = this.value.trim();
+            
+            if (currentSearchTerm) {
+                clearBtn.style.display = 'block';
+                performSearch(currentSearchTerm);
+            } else {
+                clearBtn.style.display = 'none';
+                hideResults();
+            }
+        });
+
+        // Clear search
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            currentSearchTerm = '';
+            clearBtn.style.display = 'none';
+            hideResults();
+            searchInput.focus();
+        });
+
+        // Perform search
+        function performSearch(term) {
+            const searchByName = searchName.checked;
+            const searchByServiceNo = searchServiceNo.checked;
+            const searchByPhone = searchPhone.checked;
+            
+            const searchTerm = term.toLowerCase();
+            
+            const results = personnelData.filter(person => {
+                let match = false;
+                
+                // Search by name
+                if (searchByName) {
+                    const fullName = `${person.rank} ${person.name}`.toLowerCase();
+                    if (fullName.includes(searchTerm) || person.name.toLowerCase().includes(searchTerm)) {
+                        match = true;
+                    }
+                }
+                
+                // Search by service number
+                if (searchByServiceNo && person.serviceNo.toLowerCase().includes(searchTerm)) {
+                    match = true;
+                }
+                
+                // Search by phone
+                if (searchByPhone && person.phone.includes(searchTerm)) {
+                    match = true;
+                }
+                
+                return match;
+            });
+            
+            displayResults(results, searchTerm);
+        }
+
+        // Display results in dropdown
+        function displayResults(results, searchTerm) {
+            if (results.length === 0) {
+                resultsDropdown.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-user-slash"></i>
+                        <p>No personnel found for "${searchTerm}"</p>
+                    </div>
+                `;
+                resultsDropdown.classList.add('active');
+                return;
+            }
+            
+            let resultsHTML = '';
+            
+            results.forEach((person, index) => {
+                const highlightedName = highlightText(`${person.rank} ${person.name}`, searchTerm);
+                const highlightedService = highlightText(person.serviceNo, searchTerm);
+                const highlightedPhone = highlightText(person.phone, searchTerm);
+                
+                resultsHTML += `
+                    <div class="result-item" data-index="${index}">
+                        <div class="result-info">
+                            <div class="result-name">${highlightedName}</div>
+                            <div class="result-details">
+                                <span class="result-service">${highlightedService}</span>
+                                <span class="result-phone">${highlightedPhone}</span>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right result-arrow"></i>
+                    </div>
+                `;
+            });
+            
+            resultsDropdown.innerHTML = resultsHTML;
+            resultsDropdown.classList.add('active');
+            
+            // Add click events to results
+            document.querySelectorAll('.result-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    selectedPerson = personnelData[index];
+                    showDetailPopup(selectedPerson);
+                });
+            });
+        }
+
+        // Highlight matching text
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            
+            const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
+            return text.replace(regex, '<span style="color: var(--primary-green); font-weight: 700;">$1</span>');
+        }
+
+        // Escape regex characters
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Hide results dropdown
+        function hideResults() {
+            resultsDropdown.classList.remove('active');
+        }
+
+        // Show detail popup
+        function showDetailPopup(person) {
+            popupRank.textContent = person.rank;
+            popupName.textContent = person.name;
+            popupService.textContent = person.serviceNo;
+            popupServiceDetail.textContent = person.serviceNo;
+            popupPhone.textContent = person.phone;
+            
+            // Update call button
+            callBtn.setAttribute('data-phone', person.phone);
+            callBtn.innerHTML = `<i class="fas fa-phone"></i> Call ${person.phone}`;
+            
+            // Show popup with animation
+            detailPopup.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Hide search results
+            hideResults();
+        }
+
+        // Close popup
+        closePopup.addEventListener('click', function() {
+            detailPopup.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close popup when clicking outside
+        detailPopup.addEventListener('click', function(e) {
+            if (e.target === this) {
+                detailPopup.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Call button functionality
+        callBtn.addEventListener('click', function() {
+            const phoneNumber = this.getAttribute('data-phone');
+            if (phoneNumber) {
+                // In a real app, this would initiate a phone call
+                alert(`Calling ${phoneNumber}...\n\nIn a real application, this would initiate a phone call to the selected personnel.`);
+            }
+        });
+
+        // Update search when checkboxes change
+        [searchName, searchServiceNo, searchPhone].forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (currentSearchTerm) {
+                    performSearch(currentSearchTerm);
+                }
+            });
+        });
+
+        // Initialize with full data
+        initializeWithAllData();
+
+        // Load all personnel data
+        function initializeWithAllData() {
+            // Parse your complete data
+            const fullData = `
+O/10691 Captain UST Dunuthilaka	0706575844
+O/10802 Captain K S C Karunarathna	0778216616
+O/11526 Lt RPKS Rajapaksha	0762287484
+O/11576 Captain(QM) KMD Sisira kumara	0711204364
+O/11705 2/Lt RM JANAKA	0771513795
+O/11743 2/Lt GBS Madhushan	0768584319
+O/6147 Major SH Sudusinghe	0773306405
+O/71526 Captain MN Madhushanka	0702000502
+O/8573 Major BHDS KARUNARATHNA	0773646374
+O/8702 Major RMTS ALAHAKOON	0762456346
+O/8970 Major GCO Siriwaradana	0710133727
+S/10H00198 S/SGT Punchi Banda TM	0760234669
+S/10H00505 PTE NawarathnaBanda NGWM	0771778960
+S/10H00981 L/CPL Susantha Bandara BG	0743590417
+S/10H01034 SGT Lalith Rohana ID	0756837962
+S/10H01190 S/SGT Wanasinghe WMN	0712377318
+S/10H01213 L/CPL Nawarathna RU	0771332349
+S/10H01220 CPL Indika RMG	0767196834
+S/10H01291 WO II NAWARATHNA SMSK	0742416645
+S/10H01293 CPL RANJITH KUMARA DM	0716860730
+S/10H01304 SGT Subhasinha SSK	0766624740
+S/10H01306 S/SGT Weerakoon WMAP	0775063395
+S/10H01310 S/SGT Chandrasiri WW	0760006728
+S/10H01311 L/CPL DISSANAYAKA DR	0772968057
+S/10H01323 CPL Sarath Kumara DS	0718912560
+S/10H01333 S/SGT WIJESINGHA PGDKR	0702234897
+S/10H01335 CPL Premadasa WAN	0775704084
+S/10H01344 PTE LANKATHILAKA PN	0740744298
+S/10H01347 WO II Rajapaksha RBRK	0706629855
+S/10H01349 SGT Karunathilaka MMN	0716148387
+S/10H01361 SGT Pradeep Kumara KW	0778092024
+S/10H01365 SGT Kelum HAJ	0710583230
+S/10H01372 CPL ROSHAN SANJEEWA GAN	0778334255
+S/10H01385 CPL PRIMAL WAS	0704964062
+S/10H01406 CPL THENNAKOON TMAGPK	0771385124
+S/10H01408 CPL WIMALASENA UGM	0772205643
+S/10H01441 L/CPL PUSHPA KUMARA WMBA	0767008267
+S/10H01446 L/CPL Herath HMUGSK	0778783197
+S/10H01448 SGT DHARMARATHNA HPGJK	0771191502
+S/10H01453 CPL GUNATHILAKA GG	0713021798
+S/10H01469 CPL Sisira Kumara RDS	0771998358
+S/10H01489 CPL RAJAPAKSHA RDSK	0769847105
+S/10H01491 CPL WANIGARATHNA WANK	0774142177
+S/10H01494 CPL TENNAKOON TMCP	0715847885
+S/10H01499 PTE PREDEEP KUMARA MR	0715141037
+S/10H01507 CPL WIJERATHNA AMAKGRS	0704313430
+S/10H01513 PTE SAMANTHA JA	0742693894
+S/10H01525 CPL SUBHASAN MVTA	00760143508
+S/10H01530 PTE PRIYADARSHANA NANS	0770368653
+S/10H01535 CPL PUSHPAKUMARA LPR	0703911946
+S/10H01538 CPL HERATH HMSA	0776627856
+S/10H01549 L/CPL JAYARATHNA LAMK	0704942842
+S/10H01561 CPL FERNANDO DIA	0718912283
+S/10H01578 L/CPL THUSHARA BMI	0762831374
+S/10H01581 CPL JAYAWEERA KMJC	0764038312
+S/10H01585 SGT Wanninayake WMJK	0703971729
+S/10H01599 CPL KUMARATHUNGA SK	0760085704
+S/10H01603 CPL WEERASINGHE MAA	0762594760
+S/10H01614 L/CPL JAYASINGHE HGRK	0710635777
+S/10H01619 L/CPL WIMALASIRI AMRSS	0766609736
+S/10H01640 CPL Sudharmasiri WPP	0776113520
+S/10H01649 L/CPL EKANAYAKA EMTR	0718912598
+S/10H01655 L/CPL NISHANTHA KUMARA RPG	0763092442
+S/10H01671 L/CPL PREMADASA KMAK	0776465955
+S/10H01690 CPL Dissanayaka DMBGPR	0769822025
+S/10H01702 L/CPL LASANTHA KUMARA GG	0707828807
+S/10H01724 PTE JAYASINGHE DJ	0766014353
+S/10H01744 L/CPL UPUL KUMARA GG	0713900286
+S/10H01749 L/CPL AJITH KUMARA BG	0719623194
+S/10H01752 L/CPL Wijesekara SL	0767218909
+S/10H01753 L/CPL PRIYANTHA KMA	0716320258
+S/10H01774 L/CPL SALGADU MSK	0776870158
+S/10H01775 L/CPL UPUL KD	0743242661
+S/10H01785 L/CPL BANDARA JMCT	0772749627
+S/10H01795 CPL HASINTHA CMG	0776125579
+S/10H01805 CPL SARATH KUMARA AM	0715729064
+S/10H01835 SGT Ajith Bandara PKM	0771536601
+S/10H01836 L/CPL Jayaweera RMCK	0710508492
+S/10H01837 CPL RAJAPAKSHA RHMAB	0715209077
+S/10H01839 L/CPL Lakmal APN	0704856701
+S/10H01843 PTE PREMARATHNA KGS	0753776176
+S/10H01851 L/CPL SADARUWAN GLD	0715654176
+S/12H00972 CPL JAYAWICKRAMA HAN	0773727690
+S/12H01013 SGT Jayasingha LSSK	0774394237
+S/12H01248 L/CPL WIPULASENA WRUK	0766454829
+S/12H01450 CPL SAMANTHA PB	0766428510
+S/15H00049 WO II PRIYANKA HJ	0718769738
+S/15H00177 CPL Rupasingha RB	0715174774
+S/15H00225 L/CPL Udaya Kumara SS	0778915866
+S/15H00236 SGT Gamage EGS	0764585144
+S/15H00237 SGT Gunawardana RMN	0704848230
+S/15H00242 SGT Saman Kumara WG	0770641606
+S/15H00244 SGT Senanayaka WMP	0771650225
+S/15H00252 SGT Priyadarshana HPI	0710580256
+S/15H00278 CPL NAWARATHNA KUMARA SMR	0704808006
+S/15H00291 CPL Duminda Bandara RM	0775088854
+S/15H00433 CPL TISSAWALANGU TMJP	0766811459
+S/15H00459 CPL PREMATHILAKA IDC	0779676880
+S/15H00468 CPL KEERTHISINGHA KB	0777916723
+S/15H00498 CPL DISSANAYAKA DRH	0772687597
+S/15H00526 CPL LAHIRU KUMARA HS	0760584958
+S/15H00581 L/CPL GARUSINGHE SD	0778356996
+S/15H00673 CPL WIJESUNDARA WMN	0705072050
+S/15H00724 L/CPL WIJESEKARA NGWMDB	0740567812
+S/15H00756 L/CPL THUSHARA PG	0770501863
+S/15H00807 L/CPL WIMALATHUNGA KDR	0710973369
+S/15H00876 PTE PIRIYADARASANA GAS	0764048447
+S/15H00944 L/CPL PATHMA KUMARA KWD	0702303802
+S/16H00271 WO II Jayasingha HPC	0772747972
+S/16H00277 WO II SAMPATH BPG	0710601622
+S/16H00281 SGT Madushanka KT	0771899439
+S/16H00316 WO II Ramisraja A	0761879353
+S/16H00328 SGT Priyadarshana MD	0769228114
+S/16H00364 CPL Ranjith MR	0779130363
+S/16H00374 SGT ILANGARATHNA TB	0786174994
+S/16H00440 L/CPL GUNASEKARA HB	0770471303
+S/16H00458 L/CPL SARATH KUMARA MG	0775562613
+S/16H00463 CPL CHANDANA MHMS	0774357607
+S/16H00550 CPL GUNASAKARA RMAB	0763565310
+S/16H00643 L/CPL HEMAJITH S	0714744243
+S/16H00679 L/CPL BANDARA KWTN	0743387195
+S/16H00700 SGT ASIRI KUMARA RGG	0702289839
+S/16H00726 L/CPL DISANAYAKA YGSR	0770246605
+S/16H00735 SGT PRASANNA KUMARA DSAS	0777444730
+S/16H00755 L/CPL KALUARACHCHI AKSG	0703527362
+S/17H00208 WO I HM Sunil Shantha	0767314050
+S/17H00223 CPL Rajakaruna UGAI	0771382461
+S/17H00241 WO II Thilakasiri BDLP	0760598163
+S/17H00276 CPL Asiri Bandara RDC	0761541446
+S/17H00432 SGT PUSHPAKUMARA DPAN	0740958391
+S/17H00540 CPL JAYAWEERA WD	0763426326
+S/17H00636 L/CPL ATHTHANAYAKA RMAI	0764086122
+S/20H00086 WO II Chandrapala AM	0761963075
+S/20H00149 CPL Anura Priyantha AKM	0769708987
+S/20H00160 CPL Ranjith Bandara TM	0761820004
+S/20H00163 CPL Kelum Kumara HMC	0766991848
+S/20H00198 CPL Jayasingha JPI	0711251810
+S/20H00207 CPL SANDARUWAN OVPS	0767263451
+S/20H00208 CPL ARIYARATHNA AL	0711791288
+S/20H00218 CPL RANASINGHE JMRK	0764012259
+S/20H00229 CPL SUMITH A	0769488302
+S/20H00236 CPL Jayarathna DWS	0762243269
+S/20H00262 CPL KOHOMBEPOLA HAKMJ	0774284948
+S/20H00263 CPL ROHITHA BANDARA C	0760843705
+S/20H00270 CPL DISSANAYAKA DMC	0741273586
+S/20H00281 CPL PRASANGA HACA	0769265937
+S/20H00289 CPL Pemasiri N	0779358825
+S/20H00297 CPL NAWARATHNA BANDA AG	0712787785
+S/20H00300 CPL PREMACHANDRA YG	0771579304
+S/20H00316 CPL MAYTHREEPALA RL	0765359032
+S/20H00329 CPL WIMALARATHNA DM	0742959088
+S/20H00330 CPL BANDARA EHMNP	0770032813
+S/20H00335 CPL PUBUDU KUMARA HM	0776949274
+S/20H00349 SGT ABEWICKRAMA HGM	0761182422
+S/20H00353 CPL CHAMILA RA	0769029527
+S/20H00369 L/CPL DINESH AS	0742260440
+S/20H00370 L/CPL SAMPATH ATL	0765342875
+S/20H00389 SGT PUSHPAKUMARA JMN	0711978341
+S/20H00395 L/CPL KHATALIYADDA KTGR	0762658684
+S/20H00428 L/CPL LALITH KUMARA JM	0779351756
+S/20H00432 L/CPL SOMASIRI TM	0770063162
+S/20H00449 PTE VIJAYALATH WPLG	0768905072
+S/20H00474 L/CPL DISSANAYAKA AAS	0775364615
+S/20H00496 L/CPL NANDA KUMARA NLA	0774642641
+S/20H00500 L/CPL GAMINI PUSHPA KUMARA WM	0776550254
+S/20H00519 PTE BANDARA KS	0740970703
+S/20H00526 L/CPL PATHTHINIGE PTNS	0715629149
+S/20H00527 PTE FANANDO GCD	0767085101
+S/20H00536 L/CPL JAYATHARANGA WH	0773520543
+S/20H00547 PTE WIJESEKARA YB	0758007974
+S/20H00548 CPL SARATH DMU	0770652368
+S/2H02978 PTE MAHADIULWEWA JPCM	0705607196
+S/3H02448 CPL EKANAYAKE EMPK	0764161523
+S/3H02521 CPL BANDARA JMURD	0770769813
+S/3H02583 CPL PIYARATHNA HBSK	0741916359
+S/522920 CPL SHALITHA KUMARA PL	0704010140
+S/529421 L/CPL DASANAYAKE DASD	0773238561
+S/529883 CPL Senarathna SHL	0769212542
+S/531078 L/CPL De Silva SE	0753160667
+S/531820 L/CPL Rathnajeewa LPDCD	0716143106
+S/533612 L/CPL KUMARA BMP	0716148773
+S/533639 L/CPL EKANAYAKA EMDB	0761073264
+S/533651 L/CPL ANURADA URN	0761388851
+S/534214 L/CPL DE SILVA KMML	0701162241
+S/534278 L/CPL SAHIN MAM	0762104117
+S/534279 PTE MINHAJ MM	0763899241
+S/535601 L/CPL DILSHAN KLTR	0750746834
+S/535924 L/CPL JAYATHILAKA AGSD	0771959883
+S/602885 WO II RANATHUNGA PRAWK	0711535545
+S/603074 SGT PIYARATHNA DGPS	0701399341
+S/606281 PTE Gunasekara RMMP	0767730458
+S/607553 PTE RODRIGO PSR	0774917624
+S/652696 L/CPL SISIRAKUMARA AA	0712261719
+S/653060 L/CPL MADAMPEGE MRS	0719492680
+S/777314 CPL SENARATH HWCK	0740386374
+S/780539 L/CPL WIJESIRI DGDWN	0762326294
+S/780940 PTE KAVIDU HWD	0766825632
+S/H100016 L/CPL KARUNARATHNE KPS	0774359049
+S/H100018 L/CPL SILWA APPD	0776539704
+S/H100019 L/CPL JAYARUWAN BGN	0741564526
+S/H100045 L/CPL KUMARATHUNGA PG	0711670272
+S/H100049 CPL UDAYAKUMARA HMS	0767438399
+S/H100050 L/CPL KUMARASINHA PN	0772125304
+S/H100052 CPL KUMARA IGSN	0771556920
+S/H100057 CPL LEWLIYADDA KMPDSM	0775083045
+S/H100059 L/CPL DISSANAYAKA RMWR	0710103197
+S/H100061 L/CPL KUMARA SAV	0714538213
+S/H100065 L/CPL EKANAYAKA EMCS	0743403486
+S/H100068 L/CPL GUNASEKARA RMTS	0702337296
+S/H100104 CPL JAYARATHNA NGS	0770719693
+S/H100144 L/CPL MENAKA PG	0711629253
+S/H100173 L/CPL NISANTHA G	0774641952
+S/H100185 L/CPL RATHNATHILAKE UP	0776988451
+S/H100219 L/CPL PRIYANTHA KLN	0769804428
+S/H100228 L/CPL ANURA OK	0770308399
+S/H100249 L/CPL BANDARA HMSK	0765359286
+S/H100264 L/CPL HERATH HMSB	0715967979
+S/H100267 L/CPL SANJEEWA GHGN	0741715414
+S/H100270 CPL GAJANAYAKA KMSG	0760299495
+S/H100280 L/CPL RANJITH BANDARA KM	0777655388
+S/H100285 L/CPL GUNATHILAKA UGCM	0701313819
+S/H100293 L/CPL HEWAGE DHMKL	0768473032
+S/H100294 L/CPL GUNASEAKARA HMWGBN	0768264351
+S/H100295 L/CPL NAMALKUMARA DMS	0776584279
+S/H100331 L/CPL JAYARATHNA HLSN	0768720170
+S/H100337 L/CPL INDIKA WACL	0777033564
+S/H100343 PTE THILAKARATHNA BANDARA TM	0769945724
+S/H100379 L/CPL PERERA PMLS	0767946696
+S/H100395 L/CPL ABESINGHE AMC	0766353610
+S/H100398 L/CPL JAYASOORIYA JMML	0711867927
+S/H100405 L/CPL BANDARA WMC	0766587931
+S/H100406 L/CPL LIYANAARACHCHI LAPT	0765791408
+S/H100415 L/CPL ABEYRATHNA KAN	0743258088
+S/H100429 CPL DISANAYAKA DMKM	0762994374
+S/H100461 PTE KUMARA MPWR	0767231786
+S/H100484 L/CPL Munidasa LMRSK	0714986380
+S/H100488 L/CPL Podirathna JAKP	0762270058
+S/H100574 WO II Asoka Ranjith SP	0707273551
+S/H100664 WO II Edirisingha EASB	0706315708
+S/H100675 SGT MAHINDA KUMARA WP	0777480283
+S/H100679 WO II Ganegoda DSC	0777113822
+S/H100692 CPL Premakumara DGS	0706067430
+S/H100694 CPL RANADEWA NPGIK	0775283918
+S/H100709 SGT JAYASINGHE JHMSK	0772479917
+S/H100721 L/CPL SUJEEWA KUMARA A	0741534121
+S/H100722 S/SGT Indra Kumara GS	0715168847
+S/H100725 CPL GUNATHILAKA KS	0762964136
+S/H100736 SGT Kulathunga KNK	0757586153
+S/H100738 CPL Weerakoon RLK	0760606184
+S/H100785 CPL CHATHURANGA PM	0718912379
+S/H100800 L/CPL PUSHPA KUMARA MAS	0706717943
+S/H100817 PTE GAMINI DM	0762778644
+S/H100819 L/CPL KARUNARATHNE KSP	0713734722
+S/H100822 L/CPL SENEVIRATHNE AMMGPNK	0766692974
+S/H100843 L/CPL Priyadarshana II	0779038317
+S/H100851 L/CPL JAYARATHNE WAU	0760879722
+S/H100854 PTE HERATH HMW	0776719343
+S/H100860 L/CPL DISANAYAKA DMC	0770168171
+S/H100861 L/CPL DISANAYAKA NS	0765583306
+S/H100862 L/CPL ABERATHNE ULDK	0716632153
+S/H100876 CPL WIJEWARDHANA MGM	0771486733
+S/H100879 CPL PRIYANTHA UAK	0775448712
+S/H100893 L/CPL JAYARATHNE WG	0765626219
+S/H100897 L/CPL BANDARA IMSS	0704566701
+S/H100898 L/CPL WICKRAMASINGHE AAKS	0769437086
+S/H100903 L/CPL JAYASUNDARA SSP	0704184434
+S/H100911 L/CPL JAYAWARDHANA TMA	0743593275
+S/H100928 L/CPL PADMASIRI JMN	0761559327
+S/H100936 PTE KUMARA JWS	0712983639
+S/H100946 CPL DHAMMIKA KUMARA PMASW	0774907887
+S/H100952 CPL BANDARA UGGJ	0752038012
+S/H100997 CPL PRADEEP KUMARA KKT	0779756987
+S/H101009 L/CPL PREMATHILAKA DM	0766809412
+S/H101013 L/CPL RATHNAYAKA RMLK	0761186671
+S/H101016 L/CPL JAYASEKARA JMCP	0778415769
+S/H101025 CPL SARATH KUMARA HD	0764749957
+S/H101028 L/CPL RUWAN KUMARA KKD	0771918002
+S/H101030 CPL CHAMARA SDS	0714652747
+S/H101031 L/CPL BANDARA SLN	0710868759
+S/H101036 L/CPL NANDASENA SSK	0774039638
+S/H101038 L/CPL PRABATH NT	0764195707
+S/H101041 L/CPL WEERASINGHE ADBSS	0776339227
+S/H101055 L/CPL RAJAPAKSHA ASKJ	0762292094
+S/H101080 L/CPL GUNATHILAKA BLCM	0762981296
+S/H101097 L/CPL MADURANGA HLN	0773551719
+S/H101103 L/CPL DINESH SK	0774651408
+S/H101192 CPL WEJERATHNA WM	0760696336
+S/H101203 L/CPL KUMARA DRWMCBN	0743862165
+S/H101215 L/CPL GAJASINGHA GMIB	0750948392
+S/H101241 L/CPL DHRAMASIRI KGBL	0764825462
+S/H101258 L/CPL PRIYANKARA HAASP	0768874063
+S/H101314 CPL Pushpa kumara AGA	0760675960
+S/H101318 PTE Buddadasa BT	0763971477
+S/H101333 PTE Pushpa kumara THS	0701485599
+S/H101334 L/CPL Tharanga THS	0771778739
+S/H101337 L/CPL Bandusena KPMG	0741542880
+S/H101364 L/CPL Wijebandara HMTD	0741864671
+S/H101378 PTE Adikari AMCP	0772385108
+S/H101398 L/CPL Padmasiri EDU	0779807252
+S/H101419 PTE Priyadarshana KLS	0716881048
+S/H101430 L/CPL Deshapriya HMAK	0767409863
+S/H101446 L/CPL ABEYKOON AMRS	0760707638
+S/H101458 L/CPL AJITHKUMARA DM	0766256959
+S/H101465 L/CPL ATHAPATHTHU AKMMM	0768469219
+S/H101466 L/CPL SENARATHNE NMMK	0766197240
+S/H101478 L/CPL DISSANAYAKA DMWD	0767973096
+S/H101495 L/CPL Viduranga Karunarathna R	0706143009
+S/H101538 L/CPL EKANAYAKA WMSK	0772850025
+S/H101550 L/CPL JAYASINGHA KGMS	0742281816
+S/H101585 L/CPL Samarasingha WAPSJ	0705920697
+S/H101640 L/CPL Basnayaka BMPM	0704248995
+S/H101650 L/CPL JAYARATHNA KMHD	0716356794
+S/H101661 L/CPL Manjula RM	0764225058
+S/H101775 L/CPL Subasingha SMM	0742947756
+S/H101776 L/CPL Nimalsiri MM	0760127250
+S/H101781 PTE Gunasena AM	0761803072
+S/H101788 L/CPL Kumarasingha BGHM	0703803765
+S/H101811 L/CPL Dasanayaka DMSM	0760563507
+S/H101836 L/CPL Bandara HMWD	0703301404
+S/H101840 L/CPL Dilanjude JA	0767515008
+S/H101854 L/CPL SENARATHNE RBSP	0773363669
+S/H101865 L/CPL Muthubanda RM	0702256358
+S/H101893 L/CPL Wickramasingha HGN	0718995973
+S/H101903 PTE Chandrasiri RHAMN	0702800154
+S/H101905 PTE MADUWANTHA WD	0761289498
+S/H101906 PTE Fernando SBTP	0762440483
+S/H101978 PTE Jayathilaka RMMTD	0760878218
+S/H101989 PTE Laksman Peiris LPAP	0772139754
+S/H101991 PTE THILAKARATHNA EMNG	0718827886
+S/H101995 PTE Jayalal LBR	0704977278
+S/H101998 PTE Abeysingha AMSK	0740558135
+S/H102005 PTE Weerakoon WTD	0702089522
+S/H102010 PTE DE SILVA HAPM	0716148284
+S/H102012 PTE Bulathsinghala BSDM	0715828807
+S/H102023 PTE Bandara AMGJ	0769691552
+S/H102024 PTE Wickramasingha HM	0742169877
+S/H102030 PTE Madusanka LMD	0761186605
+S/H102033 PTE Rathnayaka YGV	0702655665
+S/H102042 PTE Wimalasooriya HM	0765339161
+S/H102043 PTE Bandara AMSM	0765563198
+S/H102061 PTE Rasnayaka RMJH	0768501575
+S/H102066 PTE De Silva LHLD	0704247621
+S/H102068 PTE Premathilaka PDSM	0705262990
+S/H102098 PTE Pushpa Kumara AGP	0775429590
+S/H102101 PTE Chathuranga Herath KHMSS	0764095129
+S/H102114 PTE Warawaththa WGKPK	0715664338
+S/H102128 PTE Jayathissa JLSK	0712359967
+S/H102143 PTE Wickramasinghe WSM	0770112907
+S/H102158 PTE Sandaruwan KV	0779645601
+S/H102217 PTE Dilshan SDA	0764012245
+S/H102219 L/CPL Wijesooriya GRDL	0776816035
+S/H102221 PTE Chandrasena SD	0765263895
+S/H102231 PTE Siriwardhana DMMS	0717320282
+S/H102250 PTE De Silva SAPK	0717438338
+S/H102276 PTE Wijerathna TN	0702177783
+S/H102299 PTE Nipun Shakthi KM	0710841019
+S/H102309 PTE Gunarathna LGPP	0716423705
+S/H102310 PTE Wanasingha WMSK	0701026482
+S/H102331 CPL KAHANDAWA KASMK	0710553267
+S/H102336 SGT Gunasekara MMGA	0778014623
+S/H102340 CPL RANJITH KUMARA MUML	0705506861
+S/H102341 CPL PUSPAKUMARA KDC	0762102968
+S/H102342 L/CPL CHANDRAKUMARA HVM	0718645406
+S/H102343 L/CPL LAKMAL HMS	0701491353
+S/H102345 L/CPL THUSHARA L	0741148467
+S/H102357 PTE Sandaruwan TMC	0773692485
+S/H102361 PTE Sachinthaka RDR	0773163746
+S/H102390 PTE Kumara IGLP	0712676178
+S/H102399 PTE Sarath Kumara KMKG	0779320376
+S/H102406 PTE Kumara DMAN	0768797203
+S/H102430 PTE Chandrapala DN	0761254359
+S/H102435 PTE Fernando DHAM	0773492693
+S/H102438 PTE Dissanayaka JPK	0762288279
+S/H102455 PTE Silwa JSN	0710851283
+S/H102469 PTE Jayalath DM	0716143326
+S/H102510 PTE Kekulandara KMPKGAP	0761293639
+S/H102512 PTE Thushara SVK	0768879073
+S/H102529 PTE Kumara KP	0705332016
+S/H102532 PTE Bandara GGS	0760949961
+S/H102554 PTE Sandaruwan KW	0743362917
+S/H102556 PTE Chathuranga WHGH	0762631113
+S/H102576 PTE Bandara WMKI	0711281994
+S/H102581 L/CPL WIJESINGHE WS	0774961566
+S/H102592 CPL BANDARA RAAR	0778854428
+S/H102621 PTE PATHIRANA RMRN	0703003285
+S/H102623 PTE BANDARA WMD	0740402998
+S/H102656 PTE KODIKARA KGHP	0772589644
+S/H102676 PTE KUMARA HPDN	0767194590
+S/H102689 PTE WEJERATHNA KWNS	0770523111
+S/H102706 CPL Ranasingha B	0778293924
+S/H102707 L/CPL KUMARA KCS	0718901983
+S/H102714 CPL Jothipala GDGM	0771582407
+S/H102722 PTE MADHUSANKA RRP	0702940687
+S/H102723 PTE KUMARA HMNA	0772189216
+S/H102724 PTE RATHNAYAKA MMMA	0768408109
+S/H102772 PTE WEERASINGHE RDDK	0776226437
+S/H102776 PTE DHARMAKUMARA PMAP	0771173558
+S/H102785 PTE ABESINGHA AMTL	0762315066
+S/H102849 PTE PANANWALA PGASDL	0761028451
+S/H102882 PTE SAMATHUN SMWGHD	0760086726
+S/H102887 PTE PREMACHANDRA LHGHD	0763144638
+S/H102893 PTE GODAGANDENIYA GDPHL	0764678089
+S/H102897 PTE DARMASIRI RMS	0762358924
+S/H102902 L/CPL HERATH NHMKJB	0741183290
+S/H102950 PTE MADUSHANKA AGSL	0705243748
+S/H102953 PTE KUMARA KNUBS	0783738448
+S/H102955 PTE BANDARA KMMS	0760608796
+S/H102956 PTE MALDANEYA MGND	0701513243
+S/H102961 L/CPL MALDENIYA MGCM	0702290282
+S/H102996 PTE GAMINI GUS	0761727126
+S/H103069 PTE DISANAYAKE DMLK	0773485536
+S/H103073 PTE RAJAPAKSHA RPSUS	0775036395
+S/H103075 PTE SENEVIRATNA AMID	0779389320
+S/H103080 PTE KASTHURI TPGM	0770623856
+S/H103081 PTE THARAKA WAAS	0769830276
+S/H103085 PTE GAMAGE KGPLS	0701513059
+S/H103235 PTE THENNAKOON HMSM	0714991553
+S/H103247 PTE KUMARA WMS	0779188728
+S/H103276 PTE SANKALPA JPVU	0781464589
+S/H103279 PTE KULATHUNGA KMSB	0753784141
+S/H103284 PTE ILEPERUMA IAB	0741663603
+S/H103321 PTE BANDARA SABBPI	0769235335
+S/H103322 PTE MADUSHANKA HCC	0774827392
+S/H103343 PTE SENADEERA HPDID	0769044891
+S/H103350 PTE SURAWEERA SGLC	0704938155
+S/H103382 PTE SAMRASINGHA DRS	0763365382
+S/H103417 PTE ABEYSINGHA AHMDL	0717048560
+S/H103422 L/CPL GUNAWARDHANA KAL	0718929950
+S/H103425 PTE SAMPATH DI	0781371316
+S/H103446 PTE SANDARUWAN RLT	0715786248
+S/H103457 PTE SANDARUWAN KAGSL	0713687050
+S/H103492 PTE WIJESOORIYA GCS	0718769643
+S/H103493 PTE MADURANGA KMG	0775237897
+S/H103494 PTE PUSHPAKUMARA KD	0718722336
+S/H103496 PTE MADUSHANKA RMT	0778302747
+S/H103505 PTE KUMARATHUNGA RDNP	0704140005
+S/H103507 PTE UPATHISSA GUMN	0774034603
+S/H103521 PTE PRIYASHANTHA UDD	0763876531
+S/H103533 PTE NAWARTHENA HMRD	0762202079
+S/H103595 PTE HETTIGAMAGE MPK	0768282301
+S/H103606 PTE DISANAYAKA DMRM	0778947328
+S/H103607 PTE RANDENIYA RAJS	0742770260
+S/H103608 PTE JAYATHISSA RMPM	0765851697
+S/H103609 PTE KUMARA JMLS	0757741002
+S/H103614 PTE WICKRAMASINGHA TBSRS 0760567204
+S/H103616 PTE WICKRAMASINGHA TBULS 0743548663
+S/H103621 PTE KUMARA AMDS	0762552807
+S/H103623 PTE BANDARA KDSK	0727915168
+            `;
+            
+            const lines = fullData.trim().split('\n');
+            
+            lines.forEach(line => {
+                const parts = line.split('\t');
+                if (parts.length >= 2) {
+                    const firstPart = parts[0].trim();
+                    const phone = parts[1].trim();
+                    
+                    // Parse service number and rank/name
+                    const serviceMatch = firstPart.match(/^([A-Z]\/\d+[A-Z]?\d*)\s+(.+)$/);
+                    
+                    if (serviceMatch) {
+                        const serviceNo = serviceMatch[1];
+                        const rest = serviceMatch[2];
+                        
+                        // Try to extract rank
+                        const rankMatch = rest.match(/^([A-Za-z0-9()\/\.]+)\s+(.+)$/);
+                        
+                        if (rankMatch) {
+                            const rank = rankMatch[1];
+                            const name = rankMatch[2];
+                            personnelData.push({ serviceNo, rank, name, phone });
+                        } else {
+                            // If no clear rank, assume the whole thing is name
+                            personnelData.push({ serviceNo, rank: '', name: rest, phone });
+                        }
+                    }
+                }
+            });
+            
+            updateDataCount();
+        }
+
+        // Import JSON Data
+        importBtn.addEventListener('click', function() {
+            fileUploadModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Browse file button
+        browseFileBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        // File input change
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                fileDropArea.innerHTML = `
+                    <i class="fas fa-file-alt"></i>
+                    <p>Selected file: <strong>${selectedFile.name}</strong></p>
+                    <p>Size: ${(selectedFile.size / 1024).toFixed(2)} KB</p>
+                `;
+                uploadFileBtn.disabled = false;
+            }
+        });
+
+        // File drag and drop
+        fileDropArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--accent-green)';
+            this.style.background = 'var(--light-green)';
+        });
+
+        fileDropArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--secondary-green)';
+            this.style.background = 'transparent';
+        });
+
+        fileDropArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--secondary-green)';
+            this.style.background = 'transparent';
+            
+            if (e.dataTransfer.files.length > 0) {
+                selectedFile = e.dataTransfer.files[0];
+                if (selectedFile.type === 'application/json' || selectedFile.name.endsWith('.json')) {
+                    fileDropArea.innerHTML = `
+                        <i class="fas fa-file-alt"></i>
+                        <p>Selected file: <strong>${selectedFile.name}</strong></p>
+                        <p>Size: ${(selectedFile.size / 1024).toFixed(2)} KB</p>
+                    `;
+                    uploadFileBtn.disabled = false;
+                } else {
+                    alert('Please select a JSON file only.');
+                }
+            }
+        });
+
+        // Upload file
+        uploadFileBtn.addEventListener('click', function() {
+            if (!selectedFile) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    
+                    // Validate JSON structure
+                    if (Array.isArray(jsonData)) {
+                        if (jsonData.length > 0 && jsonData[0].serviceNo && jsonData[0].name && jsonData[0].phone) {
+                            personnelData = jsonData;
+                            updateDataCount();
+                            hideResults();
+                            searchInput.value = '';
+                            currentSearchTerm = '';
+                            
+                            alert(`Successfully imported ${jsonData.length} personnel records.`);
+                            fileUploadModal.classList.remove('active');
+                            document.body.style.overflow = 'auto';
+                            selectedFile = null;
+                        } else {
+                            alert('Invalid JSON format. Expected array of objects with serviceNo, rank, name, phone fields.');
+                        }
+                    } else {
+                        alert('Invalid JSON format. Expected an array.');
+                    }
+                } catch (error) {
+                    alert('Error reading JSON file: ' + error.message);
+                }
+            };
+            reader.readAsText(selectedFile);
+        });
+
+        // Cancel upload
+        cancelUploadBtn.addEventListener('click', function() {
+            fileUploadModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            selectedFile = null;
+        });
+
+        // Export JSON Data
+        exportBtn.addEventListener('click', function() {
+            const dataStr = JSON.stringify(personnelData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'military_personnel_data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert(`Exported ${personnelData.length} personnel records to JSON file.`);
+        });
+
+        // Clear Data Button
+        clearDataBtn.addEventListener('click', function() {
+            pinModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            pinInput.value = '';
+            pinError.classList.remove('show');
+        });
+
+        // PIN Verification
+        confirmPin.addEventListener('click', function() {
+            if (pinInput.value === SECURITY_PIN) {
+                personnelData = [];
+                updateDataCount();
+                hideResults();
+                searchInput.value = '';
+                currentSearchTerm = '';
+                
+                pinModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
+                alert('All data has been cleared successfully.');
+            } else {
+                pinError.classList.add('show');
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        });
+
+        // Cancel PIN verification
+        cancelPin.addEventListener('click', function() {
+            pinModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close PIN modal on outside click
+        pinModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                pinModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Initialize data count
+        updateDataCount();
+
+        // Keyboard navigation for search
+        searchInput.addEventListener('keydown', function(e) {
+            const results = document.querySelectorAll('.result-item');
+            
+            if (results.length === 0) return;
+            
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                
+                const currentActive = document.querySelector('.result-item.active');
+                let nextActive;
+                
+                if (e.key === 'ArrowDown') {
+                    nextActive = currentActive ? currentActive.nextElementSibling : results[0];
+                } else {
+                    nextActive = currentActive ? currentActive.previousElementSibling : results[results.length - 1];
+                }
+                
+                // Remove active class from all
+                results.forEach(r => r.classList.remove('active'));
+                
+                // Add to selected
+                if (nextActive) {
+                    nextActive.classList.add('active');
+                    nextActive.scrollIntoView({ block: 'nearest' });
+                }
+            } else if (e.key === 'Enter') {
+                const activeResult = document.querySelector('.result-item.active');
+                if (activeResult) {
+                    activeResult.click();
+                }
+            } else if (e.key === 'Escape') {
+                hideResults();
+            }
+        });
+
+        // Close results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !resultsDropdown.contains(e.target)) {
+                hideResults();
+            }
+        });
+    </script>
+</body>
+</html>
